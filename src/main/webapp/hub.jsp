@@ -22,6 +22,7 @@
         <ul>
             <li><a href="joint_ere.jsp?pipeline_id=<c:out value="${dataBean.pipeline_id}" />">joint_ere_release</a></li>
             <li><a href="enie.jsp?pipeline_id=<c:out value="${dataBean.pipeline_id}" />">enie</a></li>
+            <li><a href="merge.jsp?pipeline_id=<c:out value="${dataBean.pipeline_id}" />">merge</a></li>
 
     </body>
 </html>

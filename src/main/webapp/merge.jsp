@@ -10,20 +10,20 @@
     </jsp:useBean>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-        <title>ENIE</title>
+        <title>Merge ENIE and Joint ERE</title>
         <link rel='stylesheet' href='style.css' type='text/css'>
         <script type='text/javascript'>
             var algolink_id = "<c:out value="${dataBean.pipeline_id}" />";
         </script>
     </head>
     <body>
-        <h1>ENIE</h1>
+        <h1>Merge ENIE and Joint ERE</h1>
         Your pipeline_id is: <c:out value="${dataBean.pipeline_id}" />
-        <form method="post" action="ENIE" enctype="multipart/form-data">
+        <form method="post" action="Merge" enctype="multipart/form-data">
             TODO: put options here if there are any.
             <input type="hidden" name="step" id="step" value="/hub.jsp" />
             <input type="hidden" name="pipeline_id" id="pipeline_id" value="<c:out value="${dataBean.pipeline_id}" />"/>
-            <input type="submit" value="ENIE" />
+            <input type="submit" value="Merge" />
         </form>
     </body>
 </html>

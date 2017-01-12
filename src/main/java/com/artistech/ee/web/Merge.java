@@ -21,7 +21,7 @@ import org.apache.commons.io.IOUtils;
  *
  * @author matta
  */
-public class ENIE extends HttpServlet {
+public class Merge extends HttpServlet {
 
     private static class StreamGobbler extends Thread {
 
@@ -35,7 +35,7 @@ public class ENIE extends HttpServlet {
 
         @Override
         public void run() {
-            Logger logger = Logger.getLogger(ENIE.class.getName());
+            Logger logger = Logger.getLogger(JointEre.class.getName());
             try {
                 InputStreamReader isr = new InputStreamReader(is);
                 BufferedReader br = new BufferedReader(isr);
@@ -60,8 +60,7 @@ public class ENIE extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String enie_path = getInitParameter("path");
-        String enie_props = enie_path + getInitParameter("property");
+        String joint_ere_path = getInitParameter("path");
         String classpath = getInitParameter("classpath");
 
         Part pipeline_id_part = request.getPart("pipeline_id");
@@ -69,15 +68,20 @@ public class ENIE extends HttpServlet {
         Data data = DataManager.getData(pipeline_id);
         String input_sgm = data.getInput();
         String file_list = data.getTestList();
-        String enie_out = data.getPipelineDir() + File.separator + "enie_out";
-        data.setEnieOut(enie_out);
-        File output_dir = new File(enie_out);
+        String merge_out = data.getPipelineDir() + File.separator + "merge_out";
+        data.setMergeOut(merge_out);
+        File output_dir = new File(merge_out);
         output_dir.mkdirs();
+        //java -Xmx8G -cp ere-11-08-2016_small.jar:lib/\* edu.rpi.jie.ere.joint.Tagger /work/Documents/FOUO/EntityExtraction/joint_ere/models/joint/joint_model /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/input/ /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/test.list /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/joint_ere_out/
 
-        //TODO: need to know "$FILE_LIST", "$INPUT_SGM", "$ENIE_OUTP"
-        ProcessBuilder pb = new ProcessBuilder("java", "-cp", classpath, "-Xmx8g", "-Xms8g", "-server", "-DjetHome=./", "cuny.blender.englishie.ace.IETagger", enie_props, file_list, input_sgm, enie_out);
-        pb.directory(new File(enie_path));
-        //catch output...
+        //TODO: need to know "$INPUT_SGM", "$FILE_LIST", "$JERE_OUTP"
+        //java -Xmx8G -cp $MERG_CPTH arl.workflow.combine.MergeEnieEre $FILE_LIST $INPUT_SGM "" $ENIE_OUTP $JERE_OUTP .xml .apf.xml $MERG_OUTP
+        ProcessBuilder pb = new ProcessBuilder("java", "-Xmx8G", "-cp", classpath, "arl.workflow.combine.MergeEnieEre", file_list, input_sgm, data.getEnieOut(), data.getJointEreOut(), ".xml", "", ".apf.xml", merge_out);
+        for(String cmd : pb.command()) {
+            Logger.getLogger(Merge.class.getName()).log(Level.WARNING, cmd);
+        }
+//        Map<String, String> environment = pb.environment();
+        pb.directory(new File(joint_ere_path));
         pb.redirectErrorStream(true);
         Process proc = pb.start();
         StreamGobbler sg = new StreamGobbler(proc.getInputStream(), "");
@@ -87,7 +91,6 @@ public class ENIE extends HttpServlet {
         } catch (InterruptedException ex) {
             Logger.getLogger(JointEre.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         Part part = request.getPart("step");
         String target = IOUtils.toString(part.getInputStream(), "UTF-8");
 

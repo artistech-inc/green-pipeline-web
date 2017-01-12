@@ -39,48 +39,56 @@ public class Data {
     public Calendar getLastUse() {
         return (Calendar) last_use.clone();
     }
-    
+
     public String getKey() {
         return key;
     }
-    
+
     public String getTestList() {
         return map.get("gest_list");
     }
-    
+
     public void setTestList(String value) {
         map.put("gest_list", value);
     }
-    
+
     public String getPipelineDir() {
         return map.get("pipeline_dir");
     }
-    
+
     public void setPipelineDir(String value) {
         map.put("pipeline_dir", value);
     }
-    
+
     public String getInput() {
         return map.get("input");
     }
-    
+
     public void setInput(String value) {
         map.put("input", value);
     }
-    
+
     public String getJointEreOut() {
         return map.get("joint_ere_out");
     }
-    
+
     public void setJointEreOut(String value) {
         map.put("joint_ere_out", value);
     }
-    
-    public String getEnieEreOut() {
+
+    public String getEnieOut() {
         return map.get("enie_out");
     }
-    
-    public void setEnieEreOut(String value) {
+
+    public void setEnieOut(String value) {
         map.put("enie_out", value);
+    }
+
+    public String getMergeOut() {
+        return map.get("merge_out");
+    }
+
+    public void setMergeOut(String value) {
+        map.put("merge_out", value);
     }
 }
