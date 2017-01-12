@@ -75,4 +75,12 @@ public class Data {
     public void setJointEreOut(String value) {
         map.put("joint_ere_out", value);
     }
+    
+    public String getEnieEreOut() {
+        return map.get("enie_out");
+    }
+    
+    public void setEnieEreOut(String value) {
+        map.put("enie_out", value);
+    }
 }
