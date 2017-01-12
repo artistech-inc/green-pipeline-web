@@ -57,7 +57,6 @@ public class UploadServlet extends HttpServlet {
 
         // Create a new file upload handler
         ServletFileUpload upload = new ServletFileUpload(factory);
-        Collection<Part> parts = request.getParts();
         Part part = request.getPart("step");
         String target = IOUtils.toString(part.getInputStream(), "UTF-8");
         part = request.getPart("pipeline_id");

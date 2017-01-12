@@ -67,4 +67,12 @@ public class Data {
     public void setInput(String value) {
         map.put("input", value);
     }
+    
+    public String getJointEreOut() {
+        return map.get("joint_ere_out");
+    }
+    
+    public void setJointEreOut(String value) {
+        map.put("joint_ere_out", value);
+    }
 }

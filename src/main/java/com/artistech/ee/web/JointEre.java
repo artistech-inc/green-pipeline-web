@@ -3,20 +3,53 @@
  */
 package com.artistech.ee.web;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
+import org.apache.commons.io.IOUtils;
 
 /**
  *
  * @author matta
  */
 public class JointEre extends HttpServlet {
-    
+
+    private static class StreamGobbler extends Thread {
+
+        InputStream is;
+        String type;
+
+        private StreamGobbler(InputStream is, String type) {
+            this.is = is;
+            this.type = type;
+        }
+
+        @Override
+        public void run() {
+            Logger logger = Logger.getLogger(JointEre.class.getName());
+            try {
+                InputStreamReader isr = new InputStreamReader(is);
+                BufferedReader br = new BufferedReader(isr);
+                String line = null;
+                while ((line = br.readLine()) != null) {
+                    logger.log(Level.WARNING, line);
+                }
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+        }
+    }
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -32,25 +65,36 @@ public class JointEre extends HttpServlet {
         String joint_ere_model = joint_ere_path + getInitParameter("model");
         String classpath = getInitParameter("classpath");
 
+        Part pipeline_id_part = request.getPart("pipeline_id");
+        String pipeline_id = IOUtils.toString(pipeline_id_part.getInputStream(), "UTF-8");
+        Data data = DataManager.getData(pipeline_id);
+        String input_sgm = data.getInput();
+        String file_list = data.getTestList();
+        String joint_ere_out = data.getPipelineDir() + File.separator + "joint_ere_out";
+        data.setJointEreOut(joint_ere_out);
+        File output_dir = new File(joint_ere_out);
+        output_dir.mkdirs();
+        //java -Xmx8G -cp ere-11-08-2016_small.jar:lib/\* edu.rpi.jie.ere.joint.Tagger /work/Documents/FOUO/EntityExtraction/joint_ere/models/joint/joint_model /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/input/ /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/test.list /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/joint_ere_out/
+
         //TODO: need to know "$INPUT_SGM", "$FILE_LIST", "$JERE_OUTP"
-        ProcessBuilder pb = new ProcessBuilder("java", "-Xmx8G", "-cp", classpath, "edu.rpi.jie.ere.joint.Tagger", joint_ere_model, "$INPUT_SGM", "$FILE_LIST", "$JERE_OUTP");
+        ProcessBuilder pb = new ProcessBuilder("java", "-Xmx8G", "-cp", classpath, "edu.rpi.jie.ere.joint.Tagger", joint_ere_model, input_sgm, file_list, joint_ere_out);
+//        Map<String, String> environment = pb.environment();
         pb.directory(new File(joint_ere_path));
         pb.redirectErrorStream(true);
-        //catch output...
-
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet JointEre</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>JointEre @ " + joint_ere_path + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+        Process proc = pb.start();
+        StreamGobbler sg = new StreamGobbler(proc.getInputStream(), "");
+        sg.start();
+        try {
+            proc.waitFor();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(JointEre.class.getName()).log(Level.SEVERE, null, ex);
         }
+        Part part = request.getPart("step");
+        String target = IOUtils.toString(part.getInputStream(), "UTF-8");
+
+        // displays done.jsp page after upload finished
+        getServletContext().getRequestDispatcher(target).forward(
+                request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
