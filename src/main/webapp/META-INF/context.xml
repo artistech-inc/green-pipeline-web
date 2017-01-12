@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/green-pipeline-web" allowCasualMultipartParsing="true">
+    <Parameter name="data_path" value="/work/Dev/green-pipeline-web/data"/>
+</Context>
