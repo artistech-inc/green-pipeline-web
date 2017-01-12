@@ -1,0 +1,7 @@
+<#if licenseFirst??>
+${licenseFirst}
+</#if>
+${licensePrefix}Copyright 2017 ArtisTech, Inc.
+<#if licenseLast??>
+${licenseLast}
+</#if>
