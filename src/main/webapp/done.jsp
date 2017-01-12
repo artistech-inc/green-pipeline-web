@@ -8,6 +8,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
         <title>Upload Done</title>
+        <link rel='stylesheet' href='style.css' type='text/css'>
     </head>
     <body>
         <h3>Your file has been uploaded!</h3>

@@ -33,7 +33,7 @@ public class JointEre extends HttpServlet {
         String classpath = getInitParameter("classpath");
 
         //TODO: need to know "$INPUT_SGM", "$FILE_LIST", "$JERE_OUTP"
-        ProcessBuilder pb = new ProcessBuilder("java", "-Xmx8G", "-cp", classpath, "edu.rpi.jie.ere.joint.Tagger", "joint_ere_model", "$INPUT_SGM", "$FILE_LIST", "$JERE_OUTP");
+        ProcessBuilder pb = new ProcessBuilder("java", "-Xmx8G", "-cp", classpath, "edu.rpi.jie.ere.joint.Tagger", joint_ere_model, "$INPUT_SGM", "$FILE_LIST", "$JERE_OUTP");
         pb.directory(new File(joint_ere_path));
         pb.redirectErrorStream(true);
         //catch output...

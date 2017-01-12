@@ -7,11 +7,25 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
         <title>File Upload</title>
+        <link rel='stylesheet' href='style.css' type='text/css'>
+        <script type="text/javascript">
+            function guid() {
+                return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                    var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
+            }
+            function onload() {
+                console.log("pipeline_id: " + guid());
+                document.getElementById("pipeline_id").value = guid();    
+            }
+        </script>
     </head>
-    <body>
+    <body onload="onload()">
         <form method="post" action="UploadServlet" enctype="multipart/form-data">
             <input type="hidden" name="step" id="step" value="/joint_ere.jsp" />
             Select file to upload:
+            <input type="hidden" name="pipeline_id" id="pipeline_id"/>
             <input type="file" name="dataFile" id="fileChooser"/><br/><br/>
             <input type="submit" value="Upload" />
         </form>
