@@ -23,32 +23,6 @@ import org.apache.commons.io.IOUtils;
  */
 public class Merge extends HttpServlet {
 
-    private static class StreamGobbler extends Thread {
-
-        InputStream is;
-        String type;
-
-        private StreamGobbler(InputStream is, String type) {
-            this.is = is;
-            this.type = type;
-        }
-
-        @Override
-        public void run() {
-            Logger logger = Logger.getLogger(JointEre.class.getName());
-            try {
-                InputStreamReader isr = new InputStreamReader(is);
-                BufferedReader br = new BufferedReader(isr);
-                String line = null;
-                while ((line = br.readLine()) != null) {
-                    logger.log(Level.WARNING, line);
-                }
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            }
-        }
-    }
-
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -76,7 +50,7 @@ public class Merge extends HttpServlet {
 
         //TODO: need to know "$INPUT_SGM", "$FILE_LIST", "$JERE_OUTP"
         //java -Xmx8G -cp $MERG_CPTH arl.workflow.combine.MergeEnieEre $FILE_LIST $INPUT_SGM "" $ENIE_OUTP $JERE_OUTP .xml .apf.xml $MERG_OUTP
-        ProcessBuilder pb = new ProcessBuilder("java", "-Xmx8G", "-cp", classpath, "arl.workflow.combine.MergeEnieEre", file_list, input_sgm, data.getEnieOut(), data.getJointEreOut(), ".xml", "", ".apf.xml", merge_out);
+        ProcessBuilder pb = new ProcessBuilder("java", "-Xmx8G", "-cp", classpath, "arl.workflow.combine.MergeEnieEre", file_list, input_sgm, "", data.getEnieOut(), data.getJointEreOut(), ".xml", ".apf.xml", merge_out);
         for(String cmd : pb.command()) {
             Logger.getLogger(Merge.class.getName()).log(Level.WARNING, cmd);
         }

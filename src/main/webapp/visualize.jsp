@@ -10,18 +10,20 @@
     </jsp:useBean>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-        <title>Visualization</title>
+        <title>Generate Visualization</title>
         <link rel='stylesheet' href='style.css' type='text/css'>
         <script type='text/javascript'>
             var algolink_id = "<c:out value="${dataBean.pipeline_id}" />";
         </script>
     </head>
     <body>
-        <ul>
-            <c:forEach var="i" items="${dataBean.data.inputFiles}">
-                <li><c:out value="${i}"/></li>
-            </c:forEach>
-        </ul>
-        <!-- Drop down of files? -->
+        <h1>Generate Visualization</h1>
+        Your pipeline_id is: <c:out value="${dataBean.pipeline_id}" />
+        <form method="post" action="Visualize" enctype="multipart/form-data">
+            TODO: put options here if there are any.<br />
+            <input type="hidden" name="step" id="step" value="/hub.jsp" />
+            <input type="hidden" name="pipeline_id" id="pipeline_id" value="<c:out value="${dataBean.pipeline_id}" />"/>
+            <input type="submit" value="Generate Visualization" />
+        </form>
     </body>
 </html>

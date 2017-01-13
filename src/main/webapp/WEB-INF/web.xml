@@ -53,8 +53,16 @@
         <servlet-class>com.artistech.ee.web.Visualize</servlet-class>
         <init-param>
             <param-name>path</param-name>
-            <param-value>Value</param-value>
+            <param-value>/work/Documents/FOUO/EntityExtraction/green_pipeline/visualization</param-value>
         </init-param>
+    </servlet>
+    <servlet>
+        <servlet-name>View</servlet-name>
+        <servlet-class>com.artistech.ee.web.View</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ViewRaw</servlet-name>
+        <servlet-class>com.artistech.ee.web.ViewRaw</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>JointEre</servlet-name>
@@ -75,6 +83,14 @@
     <servlet-mapping>
         <servlet-name>Visualize</servlet-name>
         <url-pattern>/Visualize</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>View</servlet-name>
+        <url-pattern>/View</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ViewRaw</servlet-name>
+        <url-pattern>/ViewRaw</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

@@ -22,9 +22,12 @@
         </script>
     </head>
     <body onload="onload()">
+        <h1>Green Pipeline Web</h1>
+        Web app for processing through the green pipeline involving joint_ere_release and ENIE.
+        <hr />
         <form method="post" action="UploadServlet" enctype="multipart/form-data">
             <input type="hidden" name="step" id="step" value="/hub.jsp" />
-            Select file to upload:
+            Select SGM file to upload:
             <input type="hidden" name="pipeline_id" id="pipeline_id"/>
             <input type="file" name="dataFile" id="fileChooser"/><br/><br/>
             <input type="submit" value="Upload" />

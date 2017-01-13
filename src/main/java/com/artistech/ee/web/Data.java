@@ -68,11 +68,13 @@ public class Data {
     public void setInput(String value) {
         map.put("input", value);
     }
-    
+
     public String[] getInputFiles() {
-        File f = new File(map.get("input"));
-        String[] list = f.list();
-        return list;
+        if (map.containsKey("input")) {
+            File f = new File(map.get("input"));
+            return f.list();
+        }
+        return new String[]{};
     }
 
     public String getJointEreOut() {
@@ -82,10 +84,13 @@ public class Data {
     public void setJointEreOut(String value) {
         map.put("joint_ere_out", value);
     }
-    
+
     public String[] getJointEreOutFiles() {
-        File f = new File(map.get("joint_ere_out"));
-        return f.list();
+        if (map.containsKey("joint_ere_out")) {
+            File f = new File(map.get("joint_ere_out"));
+            return f.list();
+        }
+        return new String[]{};
     }
 
     public String getEnieOut() {
@@ -95,10 +100,13 @@ public class Data {
     public void setEnieOut(String value) {
         map.put("enie_out", value);
     }
-    
+
     public String[] getEnieOutFiles() {
-        File f = new File(map.get("enie_out"));
-        return f.list();
+        if (map.containsKey("enie_out")) {
+            File f = new File(map.get("enie_out"));
+            return f.list();
+        }
+        return new String[]{};
     }
 
     public String getMergeOut() {
@@ -108,9 +116,41 @@ public class Data {
     public void setMergeOut(String value) {
         map.put("merge_out", value);
     }
-    
+
     public String[] getMergedFiles() {
-        File f = new File(map.get("merge_out"));
+        if (map.containsKey("merge_out")) {
+            File f = new File(map.get("merge_out"));
+            return f.list();
+        }
+        return new String[]{};
+    }
+
+    public String getVizOut() {
+        return map.get("viz_out");
+    }
+
+    public void setVizOut(String value) {
+        map.put("viz_out", value);
+    }
+
+    public String[] getVizFiles() {
+        if (map.containsKey("viz_out")) {
+            File f = new File(map.get("viz_out"));
+            return f.list();
+        }
+        return new String[]{};
+    }
+
+    public String getData(String key) {
+        return map.get(key);
+    }
+
+    public String[] getFiles(String key) {
+        File f = new File(map.get(key));
         return f.list();
+    }
+
+    public String[] getKeys() {
+        return map.keySet().toArray(new String[]{});
     }
 }
