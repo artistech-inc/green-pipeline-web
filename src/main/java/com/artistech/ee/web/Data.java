@@ -3,6 +3,7 @@
  */
 package com.artistech.ee.web;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -67,6 +68,12 @@ public class Data {
     public void setInput(String value) {
         map.put("input", value);
     }
+    
+    public String[] getInputFiles() {
+        File f = new File(map.get("input"));
+        String[] list = f.list();
+        return list;
+    }
 
     public String getJointEreOut() {
         return map.get("joint_ere_out");
@@ -74,6 +81,11 @@ public class Data {
 
     public void setJointEreOut(String value) {
         map.put("joint_ere_out", value);
+    }
+    
+    public String[] getJointEreOutFiles() {
+        File f = new File(map.get("joint_ere_out"));
+        return f.list();
     }
 
     public String getEnieOut() {
@@ -83,6 +95,11 @@ public class Data {
     public void setEnieOut(String value) {
         map.put("enie_out", value);
     }
+    
+    public String[] getEnieOutFiles() {
+        File f = new File(map.get("enie_out"));
+        return f.list();
+    }
 
     public String getMergeOut() {
         return map.get("merge_out");
@@ -90,5 +107,10 @@ public class Data {
 
     public void setMergeOut(String value) {
         map.put("merge_out", value);
+    }
+    
+    public String[] getMergedFiles() {
+        File f = new File(map.get("merge_out"));
+        return f.list();
     }
 }

@@ -20,7 +20,7 @@
         <h1>Merge ENIE and Joint ERE</h1>
         Your pipeline_id is: <c:out value="${dataBean.pipeline_id}" />
         <form method="post" action="Merge" enctype="multipart/form-data">
-            TODO: put options here if there are any.
+            TODO: put options here if there are any.<br />
             <input type="hidden" name="step" id="step" value="/hub.jsp" />
             <input type="hidden" name="pipeline_id" id="pipeline_id" value="<c:out value="${dataBean.pipeline_id}" />"/>
             <input type="submit" value="Merge" />
