@@ -40,7 +40,7 @@ mvn clean package
 
 ## Deployment
 
-The output from compilation is in the `target/` directory as `green-pipeline-web-1.0.jar`. This jar can be deployed to Tomcat's `webapps` directory. Once deployed, it can be accessed via `http://<ip_address:port>/green-pipeline-web-1.0/`.
+The output from compilation is in the `target/` directory as `green-pipeline-web-1.0.war`. This war can be deployed to Tomcat's `webapps` directory. Once deployed, it can be accessed via `http://<ip_address:port>/green-pipeline-web-1.0/`.
 
 ## Bugs
 
