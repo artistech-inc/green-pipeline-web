@@ -46,11 +46,11 @@ public class Data {
     }
 
     public String getTestList() {
-        return map.get("gest_list");
+        return map.get("test_list");
     }
 
     public void setTestList(String value) {
-        map.put("gest_list", value);
+        map.put("test_list", value);
     }
 
     public String getPipelineDir() {

@@ -26,7 +26,7 @@ public class StreamGobbler extends Thread {
 
     @Override
     public void run() {
-        Logger logger = Logger.getLogger(JointEre.class.getName());
+        Logger logger = Logger.getLogger(StreamGobbler.class.getName());
         try {
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(isr);
