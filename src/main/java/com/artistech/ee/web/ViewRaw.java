@@ -6,7 +6,6 @@ package com.artistech.ee.web;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -35,9 +34,10 @@ public class ViewRaw extends HttpServlet {
         String stage = request.getParameter("stage");
         String file = request.getParameter("file");
         Data data = DataManager.getData(pipeline_id);
-        String fileName = data.getData(stage)+ File.separator + file;
+        String fileName = data.getData(stage) + File.separator + file;
         File f = new File(fileName);
-        IOUtils.copy(new FileInputStream(f), response.getWriter(), "UTF-8");    }
+        IOUtils.copy(new FileInputStream(f), response.getWriter(), "UTF-8");
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

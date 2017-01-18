@@ -13,7 +13,7 @@
         <title>ENIE</title>
         <link rel='stylesheet' href='style.css' type='text/css'>
         <script type='text/javascript'>
-            var algolink_id = "<c:out value="${dataBean.pipeline_id}" />";
+            var pipeline_id = "<c:out value="${dataBean.pipeline_id}" />";
         </script>
     </head>
     <body>
