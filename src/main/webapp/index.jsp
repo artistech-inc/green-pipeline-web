@@ -20,6 +20,7 @@
                 document.getElementById("pipeline_id").value = guid();    
             }
         </script>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     </head>
     <body onload="onload()">
         <h1>Green Pipeline Web</h1>

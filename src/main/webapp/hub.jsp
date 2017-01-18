@@ -16,6 +16,7 @@
         <script type='text/javascript'>
             var pipeline_id = "<c:out value="${dataBean.pipeline_id}" />";
         </script>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     </head>
     <body>
         <h1>Hub:</h1>
