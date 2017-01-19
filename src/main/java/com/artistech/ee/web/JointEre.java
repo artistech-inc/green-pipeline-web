@@ -3,12 +3,8 @@
  */
 package com.artistech.ee.web;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -56,18 +52,20 @@ public class JointEre extends HttpServlet {
         pb.directory(new File(joint_ere_path));
         pb.redirectErrorStream(true);
         Process proc = pb.start();
-        StreamGobbler sg = new StreamGobbler(proc.getInputStream(), "");
+        StreamGobbler sg = new StreamGobbler(proc.getInputStream());
         sg.start();
-        try {
-            proc.waitFor();
-        } catch (InterruptedException ex) {
-            Logger.getLogger(JointEre.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        Part part = request.getPart("step");
-        String target = IOUtils.toString(part.getInputStream(), "UTF-8");
+        ExternalProcess ex_proc = new ExternalProcess(sg, proc);
+        data.setProc(ex_proc);
+//        try {
+//            proc.waitFor();
+//        } catch (InterruptedException ex) {
+//            Logger.getLogger(JointEre.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        Part part = request.getPart("step");
+//        String target = IOUtils.toString(part.getInputStream(), "UTF-8");
 
         // displays done.jsp page after upload finished
-        getServletContext().getRequestDispatcher(target).forward(
+        getServletContext().getRequestDispatcher("/watchProcess.jsp").forward(
                 request, response);
     }
 

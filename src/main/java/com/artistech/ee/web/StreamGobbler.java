@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,12 +17,12 @@ import java.util.logging.Logger;
  */
 public class StreamGobbler extends Thread {
 
-    InputStream is;
-    String type;
+    private final Mailbox<String> mailbox;
+    private final InputStream is;
 
-    public StreamGobbler(InputStream is, String type) {
+    public StreamGobbler(InputStream is) {
+        mailbox = new Mailbox<>();
         this.is = is;
-        this.type = type;
     }
 
     @Override
@@ -30,12 +31,25 @@ public class StreamGobbler extends Thread {
         try {
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(isr);
-            String line = null;
+            String line;
             while ((line = br.readLine()) != null) {
+                mailbox.addMessage(line);
                 logger.log(Level.WARNING, line);
             }
+            mailbox.halt();
         } catch (IOException ioe) {
-            ioe.printStackTrace();
+            logger.log(Level.SEVERE, null, ioe);
         }
+    }
+
+    public String getUpdateText() {
+        ArrayList<String> messages = mailbox.getMessages();
+        StringBuilder sb = new StringBuilder();
+        if (messages != null) {
+            for (String line : messages) {
+                sb.append(line).append(System.lineSeparator());
+            }
+        }
+        return sb.toString().replaceAll("\\\\r", "").replaceAll("\\\\n", "\n");
     }
 }

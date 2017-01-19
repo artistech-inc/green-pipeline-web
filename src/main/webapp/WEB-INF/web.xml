@@ -64,6 +64,14 @@
         <servlet-name>ViewRaw</servlet-name>
         <servlet-class>com.artistech.ee.web.ViewRaw</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ProcessOutput</servlet-name>
+        <servlet-class>com.artistech.ee.web.ProcessOutput</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ProcessMonitor</servlet-name>
+        <servlet-class>com.artistech.ee.web.ProcessMonitor</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>JointEre</servlet-name>
         <url-pattern>/JointEre</url-pattern>
@@ -91,6 +99,14 @@
     <servlet-mapping>
         <servlet-name>ViewRaw</servlet-name>
         <url-pattern>/ViewRaw</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ProcessOutput</servlet-name>
+        <url-pattern>/ProcessOutput</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ProcessMonitor</servlet-name>
+        <url-pattern>/ProcessMonitor</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

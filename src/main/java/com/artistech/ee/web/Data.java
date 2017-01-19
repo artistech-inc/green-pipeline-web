@@ -16,6 +16,7 @@ public class Data {
     private Calendar last_use;
     private final String key;
     private final HashMap<String, String> map = new HashMap<>();
+    private ExternalProcess proc;
 
     public Data(String key) {
         this.key = key;
@@ -152,5 +153,13 @@ public class Data {
 
     public String[] getKeys() {
         return map.keySet().toArray(new String[]{});
+    }
+
+    public ExternalProcess getProc() {
+        return proc;
+    }
+
+    public void setProc(ExternalProcess value) {
+        proc = value;
     }
 }

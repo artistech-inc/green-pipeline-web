@@ -1,24 +1,22 @@
+package com.artistech.ee.web;
+
 /*
  * Copyright 2017 ArtisTech, Inc.
  */
-package com.artistech.ee.web;
 
-import java.io.File;
+
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
-import org.apache.commons.io.IOUtils;
 
 /**
  *
  * @author matta
  */
-public class ENIE extends HttpServlet {
+public class ProcessOutput extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -31,41 +29,17 @@ public class ENIE extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String enie_path = getInitParameter("path");
-        String enie_props = enie_path + getInitParameter("property");
-        String classpath = getInitParameter("classpath");
-
-        Part pipeline_id_part = request.getPart("pipeline_id");
-        String pipeline_id = IOUtils.toString(pipeline_id_part.getInputStream(), "UTF-8");
+        response.setContentType("text/plain;charset=UTF-8");
+        String pipeline_id = request.getParameter("pipeline_id");
+//        String pipeline_id = IOUtils.toString(pipeline_id_part.getInputStream(), "UTF-8");
         Data data = DataManager.getData(pipeline_id);
-        String input_sgm = data.getInput();
-        String file_list = data.getTestList();
-        String enie_out = data.getPipelineDir() + File.separator + "enie_out";
-        data.setEnieOut(enie_out);
-        File output_dir = new File(enie_out);
-        output_dir.mkdirs();
 
-        //TODO: need to know "$FILE_LIST", "$INPUT_SGM", "$ENIE_OUTP"
-        ProcessBuilder pb = new ProcessBuilder("java", "-cp", classpath, "-Xmx8g", "-Xms8g", "-server", "-DjetHome=./", "cuny.blender.englishie.ace.IETagger", enie_props, file_list, input_sgm, enie_out);
-        pb.directory(new File(enie_path));
-        //catch output...
-        pb.redirectErrorStream(true);
-        Process proc = pb.start();
-        StreamGobbler sg = new StreamGobbler(proc.getInputStream());
-        sg.start();
-        ExternalProcess ex_proc = new ExternalProcess(sg, proc);
-        data.setProc(ex_proc);
-//        try {
-//            proc.waitFor();
-//        } catch (InterruptedException ex) {
-//            Logger.getLogger(JointEre.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        Part part = request.getPart("step");
-//        String target = IOUtils.toString(part.getInputStream(), "UTF-8");
-
-        // displays done.jsp page after upload finished
-        getServletContext().getRequestDispatcher("/watchProcess.jsp").forward(
-                request, response);
+        try (PrintWriter out = response.getWriter()) {
+            if(data.getProc() != null) {
+                String updateText = data.getProc().getGobbler().getUpdateText();
+                out.print(updateText);
+            }
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
