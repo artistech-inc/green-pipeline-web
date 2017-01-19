@@ -106,6 +106,25 @@
                     setTimeout("getProcessStatus()", 250);
                 }
             }
+            function kill_proc() {
+                console.log("Killing Process");
+                var xmlhttp = getXmlHttpObj();
+
+                try {
+                    xmlhttp.open("POST", "KillProcess");
+                    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                    xmlhttp.send("pipeline_id=" + pipeline_id);
+                    xmlhttp.onreadystatechange = function ()
+                    {
+                        if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                            console.log("Killed Process");
+//                            proc_monitor_callback(xmlhttp.responseText); // Another callback here
+                        }
+                    };
+                } catch (err) {
+                    printConsole(err.message);
+                }
+            }
         </script>
         <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     </head>
@@ -116,5 +135,7 @@
         <textarea id="console" rows="50" cols="85"></textarea>
         <br />
         <a id="hub_link" href="hub.jsp?pipeline_id=<c:out value="${dataBean.pipeline_id}" />">HUB</a>
+        <br />
+        <a id="kill_link" href="javascript:kill_proc();">Kill Process [ALPHA]</a>
     </body>
 </html>

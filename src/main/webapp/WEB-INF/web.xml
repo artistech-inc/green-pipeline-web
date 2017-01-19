@@ -72,6 +72,10 @@
         <servlet-name>ProcessMonitor</servlet-name>
         <servlet-class>com.artistech.ee.web.ProcessMonitor</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>KillProcess</servlet-name>
+        <servlet-class>com.artistech.ee.web.KillProcess</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>JointEre</servlet-name>
         <url-pattern>/JointEre</url-pattern>
@@ -107,6 +111,10 @@
     <servlet-mapping>
         <servlet-name>ProcessMonitor</servlet-name>
         <url-pattern>/ProcessMonitor</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>KillProcess</servlet-name>
+        <url-pattern>/KillProcess</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
