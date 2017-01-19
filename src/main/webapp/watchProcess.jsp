@@ -101,7 +101,7 @@
                 if (data === "false") {
                     $('#hub_link').unbind('click');
                     proc_alive = false;
-                    printConsole("\n\n*********************\nProcess Complete!\n*********************")
+                    printConsole("\n\n*********************\nProcess Complete!\n*********************");
                 } else {
                     setTimeout("getProcessStatus()", 250);
                 }
