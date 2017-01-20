@@ -34,9 +34,14 @@ public class ViewRaw extends HttpServlet {
         String stage = request.getParameter("stage");
         String file = request.getParameter("file");
         Data data = DataManager.getData(pipeline_id);
-        String fileName = data.getData(stage) + File.separator + file;
-        File f = new File(fileName);
-        IOUtils.copy(new FileInputStream(f), response.getWriter(), "UTF-8");
+        File ftest = new File(file);
+        if (ftest.exists()) {
+            IOUtils.copy(new FileInputStream(ftest), response.getWriter(), "UTF-8");
+        } else {
+            String fileName = data.getData(stage) + File.separator + file;
+            File f = new File(fileName);
+            IOUtils.copy(new FileInputStream(f), response.getWriter(), "UTF-8");
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
