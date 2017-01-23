@@ -60,16 +60,17 @@ public class UploadServlet extends HttpServlet {
         String target = IOUtils.toString(part.getInputStream(), "UTF-8");
         part = request.getPart("pipeline_id");
         String pipeline_id = IOUtils.toString(part.getInputStream(), "UTF-8");
-        String pipline_folder = uploadFolder + File.separator + pipeline_id;
-        uploadFolder += File.separator + pipeline_id + File.separator + "input";
+//        String pipline_folder = uploadFolder + File.separator + pipeline_id;
+//        uploadFolder += File.separator + pipeline_id + File.separator + "input";
 
         DataManager dataManagerBean = new DataManager();
         dataManagerBean.setPipeline_id(pipeline_id);
 
         Data data = new Data(pipeline_id);
-        data.setInput(uploadFolder);
-        data.setPipelineDir(pipline_folder);
-        data.setTestList(pipline_folder + File.separator + "test.list");
+        data.setPipelineDir(uploadFolder);
+//        data.setInput(uploadFolder);
+//        data.setPipelineDir(pipline_folder);
+//        data.setTestList(pipline_folder + File.separator + "test.list");
 
         dataManagerBean.setData(data);
         
@@ -78,7 +79,7 @@ public class UploadServlet extends HttpServlet {
 
         try {
             Part part1 = request.getPart("dataFile");
-            File dir = new File(uploadFolder);
+            File dir = new File(data.getInput());
             if (!dir.exists()) {
                 dir.mkdirs();
             }
@@ -87,7 +88,7 @@ public class UploadServlet extends HttpServlet {
                 writer.write(part1.getSubmittedFileName() + System.getProperty("line.separator"));
             }
 
-            File f = new File(uploadFolder + File.separator + part1.getSubmittedFileName());
+            File f = new File(data.getInput() + File.separator + part1.getSubmittedFileName());
             if (f.exists()) {
                 f.delete();
             }

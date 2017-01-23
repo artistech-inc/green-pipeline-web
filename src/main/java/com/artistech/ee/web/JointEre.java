@@ -41,7 +41,7 @@ public class JointEre extends HttpServlet {
         String input_sgm = data.getInput();
         String file_list = data.getTestList();
         String joint_ere_out = data.getPipelineDir() + File.separator + "joint_ere_out";
-        data.setJointEreOut(joint_ere_out);
+//        data.setJointEreOut(joint_ere_out);
         File output_dir = new File(joint_ere_out);
         output_dir.mkdirs();
         //java -Xmx8G -cp ere-11-08-2016_small.jar:lib/\* edu.rpi.jie.ere.joint.Tagger /work/Documents/FOUO/EntityExtraction/joint_ere/models/joint/joint_model /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/input/ /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/test.list /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/joint_ere_out/

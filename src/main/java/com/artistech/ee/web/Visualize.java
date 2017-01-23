@@ -51,7 +51,7 @@ public class Visualize extends HttpServlet {
             Logger.getLogger(Visualize.class.getName()).log(Level.SEVERE, null, e);
         }
 
-        data.setVizOut(viz_out);
+//        data.setVizOut(viz_out);
         File viz_dir = new File(viz_out);
         viz_dir.mkdirs();
         //java -Xmx8G -cp ere-11-08-2016_small.jar:lib/\* edu.rpi.jie.ere.joint.Tagger /work/Documents/FOUO/EntityExtraction/joint_ere/models/joint/joint_model /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/input/ /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/test.list /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/joint_ere_out/

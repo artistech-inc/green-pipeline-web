@@ -40,7 +40,7 @@ public class Merge extends HttpServlet {
         String input_sgm = data.getInput();
         String file_list = data.getTestList();
         String merge_out = data.getPipelineDir() + File.separator + "merge_out";
-        data.setMergeOut(merge_out);
+//        data.setMergeOut(merge_out);
         File output_dir = new File(merge_out);
         output_dir.mkdirs();
         //java -Xmx8G -cp ere-11-08-2016_small.jar:lib/\* edu.rpi.jie.ere.joint.Tagger /work/Documents/FOUO/EntityExtraction/joint_ere/models/joint/joint_model /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/input/ /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/test.list /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/joint_ere_out/
