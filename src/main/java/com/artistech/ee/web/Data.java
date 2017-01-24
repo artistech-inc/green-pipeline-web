@@ -157,7 +157,7 @@ public class Data {
 
     public String[] getFiles(String key) {
         File f = new File(getData(key));
-        if (f.exists()) {
+        if (f.exists() && f.isDirectory()) {
             return f.list();
         }
         return new String[]{};

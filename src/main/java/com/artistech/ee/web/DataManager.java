@@ -3,6 +3,7 @@
  */
 package com.artistech.ee.web;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
@@ -15,15 +16,52 @@ import java.util.TreeMap;
  */
 public class DataManager {
 
+    private static final TreeMap<String, Data> DATAS = new TreeMap<>();
+    private static String dataPath;
+
     private String pipeline_id;
 
-    private static final TreeMap<String, Data> DATAS = new TreeMap<>();
+    public static void setDataPath(String value) {
+        dataPath = value;
+    }
+
+    public static String getDataPath() {
+        return dataPath;
+    }
+    
+    public synchronized String[] getStoredData() {
+        ArrayList<Data> ret = new ArrayList<>(DATAS.values());
+        ArrayList<String> stored = new ArrayList<>();
+        File f = new File(getDataPath());
+        if (f.exists()) {
+            for(File file : f.listFiles()) {
+                String id = file.getName();
+                stored.add(id);
+            }
+        }
+        for(Data data : ret) {
+            if(stored.contains(data.getKey())) {
+                stored.remove(data.getKey());
+            }
+        }
+        for(String key : stored) {
+            Data d = new Data(key);
+            d.setPipelineDir(getDataPath());
+            ret.add(d);
+            DATAS.put(key, d);
+        }
+        ArrayList<String> ids = new ArrayList<>();
+        for(Data data : ret) {
+            ids.add(data.getKey());
+        }
+        return ids.toArray(new String[]{});
+    }
 
     /**
      * Get all registered Data objects.
      * @return 
      */    
-    public static synchronized ArrayList<Data> getAllData() {
+    public synchronized ArrayList<Data> getAllData() {
         ArrayList<Data> ret = new ArrayList<>(DATAS.values());
         return ret;
     }
