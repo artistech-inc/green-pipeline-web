@@ -184,6 +184,23 @@ public class Data {
         return keys.toArray(new String[]{});
     }
 
+    public static String[] getDataKeys() {
+        ArrayList<String> keys = new ArrayList<>();
+        Field[] fields = Data.class.getFields();
+        for (Field f : fields) {
+            int modifiers = f.getModifiers();
+            if ((modifiers & (Modifier.STATIC | Modifier.FINAL))
+                    == (Modifier.STATIC | Modifier.FINAL)) {
+                try {
+                    keys.add(f.get(null).toString());
+                } catch (IllegalArgumentException | IllegalAccessException ex) {
+                    Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        return keys.toArray(new String[]{});
+    }
+
     public ExternalProcess getProc() {
         return proc;
     }

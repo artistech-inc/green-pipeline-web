@@ -40,7 +40,7 @@ public class ENIE extends HttpServlet {
         Data data = DataManager.getData(pipeline_id);
         String input_sgm = data.getInput();
         String file_list = data.getTestList();
-        String enie_out = data.getPipelineDir() + File.separator + "enie_out";
+        String enie_out = data.getEnieOut();
 //        data.setEnieOut(enie_out);
         File output_dir = new File(enie_out);
         output_dir.mkdirs();

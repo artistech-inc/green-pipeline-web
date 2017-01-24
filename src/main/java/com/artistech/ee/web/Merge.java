@@ -39,7 +39,7 @@ public class Merge extends HttpServlet {
         Data data = DataManager.getData(pipeline_id);
         String input_sgm = data.getInput();
         String file_list = data.getTestList();
-        String merge_out = data.getPipelineDir() + File.separator + "merge_out";
+        String merge_out = data.getMergeOut();
 //        data.setMergeOut(merge_out);
         File output_dir = new File(merge_out);
         output_dir.mkdirs();

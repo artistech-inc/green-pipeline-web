@@ -31,11 +31,27 @@
                 </ul>
             </c:if>
         </c:forEach>
+        <c:if test="${fn:length(dataBean.data.jointEreOutFiles) gt 0}">
+            <h2>Visualization for Joint ERE</h2>
+            <ul>
+                <c:forEach var="inputFile" items="${dataBean.data.jointEreOutFiles}">
+                    <li><a target="_blank" href="View?from=joint_ere_out&pipeline_id=<c:out value="${dataBean.pipeline_id}"/>&file=<c:out value="${inputFile}"/>"><c:out value="${inputFile}"/></a></li>
+                    </c:forEach>
+            </ul>
+        </c:if>
+        <c:if test="${fn:length(dataBean.data.enieOutFiles) gt 0}">
+            <h2>Visualization for ENIE</h2>
+            <ul>
+                <c:forEach var="inputFile" items="${dataBean.data.enieOutFiles}">
+                    <li><a target="_blank" href="View?from=enie_out&pipeline_id=<c:out value="${dataBean.pipeline_id}"/>&file=<c:out value="${inputFile}"/>"><c:out value="${inputFile}"/></a></li>
+                    </c:forEach>
+            </ul>
+        </c:if>
         <c:if test="${fn:length(dataBean.data.vizFiles) gt 0}">
-            <h2>Generated Visualization</h2>
+            <h2>Visualization from MERGE</h2>
             <ul>
                 <c:forEach var="inputFile" items="${dataBean.data.vizFiles}">
-                    <li><a target="_blank" href="View?pipeline_id=<c:out value="${dataBean.pipeline_id}"/>&file=<c:out value="${inputFile}"/>"><c:out value="${inputFile}"/></a></li>
+                    <li><a target="_blank" href="View?from=viz_out&pipeline_id=<c:out value="${dataBean.pipeline_id}"/>&file=<c:out value="${inputFile}"/>"><c:out value="${inputFile}"/></a></li>
                     </c:forEach>
             </ul>
         </c:if>
@@ -53,10 +69,7 @@
                                   fn:length(dataBean.data.enieOutFiles) gt 0}">
                     <li><a href="merge.jsp?pipeline_id=<c:out value="${dataBean.pipeline_id}" />">merge</a></li>
                     </c:if>
-                    <c:if test="${fn:length(dataBean.data.mergedFiles) gt 0 and
-                                  fn:length(dataBean.data.vizFiles) eq 0}">
-                    <li><a href="visualize.jsp?pipeline_id=<c:out value="${dataBean.pipeline_id}" />">visualize</a></li>
-                    </c:if>
+                <li><a href="visualize.jsp?pipeline_id=<c:out value="${dataBean.pipeline_id}" />">visualize</a></li>
             </ul>
         </c:if>
     </body>

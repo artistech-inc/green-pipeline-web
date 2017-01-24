@@ -40,7 +40,7 @@ public class JointEre extends HttpServlet {
         Data data = DataManager.getData(pipeline_id);
         String input_sgm = data.getInput();
         String file_list = data.getTestList();
-        String joint_ere_out = data.getPipelineDir() + File.separator + "joint_ere_out";
+        String joint_ere_out = data.getJointEreOut();
 //        data.setJointEreOut(joint_ere_out);
         File output_dir = new File(joint_ere_out);
         output_dir.mkdirs();

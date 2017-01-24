@@ -31,9 +31,20 @@ public class View extends HttpServlet {
             throws ServletException, IOException {
         String pipeline_id = request.getParameter("pipeline_id");
         String file = request.getParameter("file");
+        String from = request.getParameter("from");
         Data data = DataManager.getData(pipeline_id);
-        String fileName = data.getVizOut() + File.separator + file;
+        String fileName = data.getPipelineDir() + File.separator + from + File.separator + file;
         File f = new File(fileName);
+
+//        if (!f.exists()) {
+//            for (String dir : Data.getDataKeys()) {
+//                fileName = data.getPipelineDir() + File.separator + dir + File.separator + file;
+//                f = new File(fileName);
+//                if(f.exists()) {
+//                    break;
+//                }
+//            }
+//        }
         response.setContentType("text/html;charset=UTF-8");
         IOUtils.copy(new FileInputStream(f), response.getWriter(), "UTF-8");
     }
