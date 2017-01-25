@@ -93,6 +93,7 @@ public class Visualize extends HttpServlet {
                         } catch (InterruptedException ex) {
                             Logger.getLogger(JointEre.class.getName()).log(Level.SEVERE, null, ex);
                         }
+                        bos.write("MERGE VIZ" + System.lineSeparator());
                         bos.write(sg.getUpdateText() + System.lineSeparator());
                         bos.flush();
                     } catch (IOException ex) {
@@ -129,6 +130,7 @@ public class Visualize extends HttpServlet {
                         } catch (InterruptedException ex) {
                             Logger.getLogger(JointEre.class.getName()).log(Level.SEVERE, null, ex);
                         }
+                        bos.write("ENIE VIZ" + System.lineSeparator());
                         bos.write(sg.getUpdateText() + System.lineSeparator());
                         bos.flush();
                     } catch (IOException ex) {
@@ -164,6 +166,7 @@ public class Visualize extends HttpServlet {
                         } catch (InterruptedException ex) {
                             Logger.getLogger(JointEre.class.getName()).log(Level.SEVERE, null, ex);
                         }
+                        bos.write("JOINT ERE VIZ" + System.lineSeparator());
                         bos.write(sg.getUpdateText() + System.lineSeparator());
                         bos.flush();
                     } catch (IOException ex) {
