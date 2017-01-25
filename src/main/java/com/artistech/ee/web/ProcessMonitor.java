@@ -36,7 +36,7 @@ public class ProcessMonitor extends HttpServlet {
 
         try (PrintWriter out = response.getWriter()) {
             if(data.getProc() != null) {
-                out.print(data.getProc().getProcess().isAlive());
+                out.print(data.getProc().isAlive());
             }
             else {
                 out.print(false);
