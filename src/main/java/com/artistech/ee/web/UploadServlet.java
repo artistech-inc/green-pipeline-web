@@ -25,7 +25,6 @@ public class UploadServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-//    private static final String DATA_DIRECTORY = "data";
     private static final int MAX_MEMORY_SIZE = 1024 * 1024 * 2;
     private static final int MAX_REQUEST_SIZE = 1024 * 1024;
 
@@ -60,20 +59,15 @@ public class UploadServlet extends HttpServlet {
         String target = IOUtils.toString(part.getInputStream(), "UTF-8");
         part = request.getPart("pipeline_id");
         String pipeline_id = IOUtils.toString(part.getInputStream(), "UTF-8");
-//        String pipline_folder = uploadFolder + File.separator + pipeline_id;
-//        uploadFolder += File.separator + pipeline_id + File.separator + "input";
 
         DataManager dataManagerBean = new DataManager();
         dataManagerBean.setPipeline_id(pipeline_id);
 
         Data data = new Data(pipeline_id);
         data.setPipelineDir(uploadFolder);
-//        data.setInput(uploadFolder);
-//        data.setPipelineDir(pipline_folder);
-//        data.setTestList(pipline_folder + File.separator + "test.list");
 
         dataManagerBean.setData(data);
-        
+
         // Set overall request size constraint
         upload.setSizeMax(MAX_REQUEST_SIZE);
 
@@ -86,6 +80,13 @@ public class UploadServlet extends HttpServlet {
 
             try (java.io.BufferedWriter writer = new BufferedWriter(new FileWriter(new File(data.getTestList())))) {
                 writer.write(part1.getSubmittedFileName() + System.getProperty("line.separator"));
+            }
+
+            String submittedFileName = part1.getSubmittedFileName();
+            if ("".equals(submittedFileName)) {
+                // displays done.jsp page after upload finished
+                getServletContext().getRequestDispatcher("/index.jsp").forward(
+                        request, response);
             }
 
             File f = new File(data.getInput() + File.separator + part1.getSubmittedFileName());

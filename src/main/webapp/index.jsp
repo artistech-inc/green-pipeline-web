@@ -23,7 +23,7 @@
         <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     </head>
     <body onload="onload()">
-        <h1>Green Pipeline Web</h1>
+        <h1>Green Pipeline Run View</h1>
         Web app for processing through the green pipeline involving joint_ere_release and ENIE.
         <div>
             <h2>View Data</h2>

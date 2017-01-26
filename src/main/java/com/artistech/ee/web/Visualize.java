@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -103,6 +104,8 @@ public class Visualize extends HttpServlet {
 
                 /**
                  * ENIE VIZ!
+                 * 
+                 * TODO: rename file to apf.xml
                  */
                 dest = new File(data.getEnieOut());
                 if (dest.exists()) {
@@ -111,6 +114,18 @@ public class Visualize extends HttpServlet {
                             FileUtils.copyDirectory(source, dest);
                         } catch (IOException e) {
                             Logger.getLogger(Visualize.class.getName()).log(Level.SEVERE, null, e);
+                        }
+                        
+                        File dir = new File(data.getEnieOut());
+                        File[] listFiles = dir.listFiles();
+                        ArrayList<File> toDelete = new ArrayList<>();
+                        for(File f : listFiles) {
+                            if(f.getName().endsWith(".xml")) {
+                                String fileName = f.getAbsolutePath().replace(".xml", ".apf.xml");
+                                File dest2 = new File(fileName);
+                                FileUtils.copyFile(f, dest2);
+                                toDelete.add(dest2);
+                            }
                         }
 
                         ProcessBuilder pb = new ProcessBuilder("python3", "ere_visualizer.py", file_list, data.getEnieOut(), data.getEnieOut());
@@ -129,6 +144,9 @@ public class Visualize extends HttpServlet {
                             proc.waitFor();
                         } catch (InterruptedException ex) {
                             Logger.getLogger(JointEre.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        for(File f : toDelete) {
+                            f.delete();
                         }
                         bos.write("ENIE VIZ" + System.lineSeparator());
                         bos.write(sg.getUpdateText() + System.lineSeparator());
