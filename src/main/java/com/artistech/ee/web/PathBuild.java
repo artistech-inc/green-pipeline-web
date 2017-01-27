@@ -3,7 +3,10 @@
  */
 package com.artistech.ee.web;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -70,7 +73,7 @@ public class PathBuild extends HttpServlet {
         DataManager dataManagerBean = new DataManager();
         dataManagerBean.setPipeline_id(pipeline_id);
         Data data = DataManager.getData(pipeline_id);
-        if(data == null) {
+        if (data == null) {
             data = new Data(pipeline_id);
         }
 
@@ -82,16 +85,56 @@ public class PathBuild extends HttpServlet {
         String stepName = IOUtils.toString(part.getInputStream(), "UTF-8");
         PipelineBean pb = new PipelineBean();
         PipelineBean.Part create = pb.createPart(stepName);
+        PipelineBean.Parameter[] parameters = create.getParameters();
 
         for (PipelineBean.Parameter p : create.getParameters()) {
             part = request.getPart(stepName + "__" + p.getName());
             if (part != null) {
                 //HANDLE THE INPUT!
                 System.out.println(p.getName());
+
+                /**
+                 * Handle an enumerated (dropdown/select).
+                 */
+                if (p.getType().equals("select")) {
+                    String value = IOUtils.toString(part.getInputStream(), "UTF-8");
+                    p.setValue(value);
+                }
+
+                /**
+                 * Handle Uploading a File.
+                 */
+                if (p.getType().equals("file")) {
+                    p.setValue(part.getSubmittedFileName());
+
+                    File dir = new File(data.getInput());
+                    if (!dir.exists()) {
+                        dir.mkdirs();
+                    }
+
+                    try (java.io.BufferedWriter writer = new BufferedWriter(new FileWriter(new File(data.getTestList())))) {
+                        writer.write(part.getSubmittedFileName() + System.getProperty("line.separator"));
+                    }
+
+                    String submittedFileName = part.getSubmittedFileName();
+                    if ("".equals(submittedFileName)) {
+                        // displays done.jsp page after upload finished
+                        getServletContext().getRequestDispatcher("/pipeline.jsp?pipeline_id=" + pipeline_id).forward(
+                                request, response);
+                    }
+
+                    File f = new File(data.getInput() + File.separator + part.getSubmittedFileName());
+                    if (f.exists()) {
+                        f.delete();
+                    }
+                    try (FileOutputStream fos = new FileOutputStream(f)) {
+                        IOUtils.copy(part.getInputStream(), fos, 1024);
+                    }
+                }
             }
         }
         data.addPart(create);
-        getServletContext().getRequestDispatcher("/pipeline.jsp").forward(
+        getServletContext().getRequestDispatcher("/pipeline.jsp?pipeline_id=" + pipeline_id).forward(
                 request, response);
     }
 

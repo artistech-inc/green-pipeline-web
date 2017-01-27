@@ -231,4 +231,7 @@ public class Data {
         }
         return ret;
     }
+    public ArrayList<PipelineBean.Part> getCurrentParts() {
+        return path;
+    }
 }

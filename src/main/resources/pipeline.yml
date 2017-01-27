@@ -12,17 +12,17 @@ parts:
         requires:
             - input
         page: joint_ere.jsp
-        parameters:
-            - parameter:
-                name: dummy1
-                value: dummy1Value1
-                type: string
-                values: [dummy1Value1, dummy1Value2, dummy1Value3]
-            - parameter:
-                name: dummy2
-                value: dummy2Value1
-                type: string
-                values: [dummy2Value1, dummy2Value2, dummy2Value3]
+        parameters: []
+#            - parameter:
+#                name: dummy1
+#                value: dummy1Value1
+#                type: select
+#                values: [dummy1Value1, dummy1Value2, dummy1Value3]
+#            - parameter:
+#                name: dummy2
+#                value: dummy2Value1
+#                type: select
+#                values: [dummy2Value1, dummy2Value2, dummy2Value3]
     enie:
         requires:
             - input

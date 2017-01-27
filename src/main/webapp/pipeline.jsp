@@ -40,9 +40,27 @@
     <c:if test="${not empty dataBean.data}">
         <c:set value="${dataBean.data.currentPath}" var="specifed" />
     </c:if>
-    
+
     <body onload="onStepChange()">
         <h1><c:out value="${pipelineBean.name}" /></h1>
+        <c:if test="${not empty dataBean.data}">
+            <c:forEach var="part" items="${dataBean.data.currentParts}">
+                <div>
+                    <fieldset class='fieldset-auto-width'>
+                        <legend><c:out value="${part.name}" /></legend>
+                        <ul>
+                        <c:if test="${fn:length(part.parameters) eq 0}">
+                            <li>No Parameters</li>
+                        </c:if>
+                        <c:forEach var="parameter" items="${part.parameters}">
+                            <li><c:out value="${parameter.name}" />: <c:out value="${parameter.value}" /></li>
+                        </c:forEach>
+                        </ul>
+                    </fieldset>
+                </div>
+            </c:forEach>
+        </c:if>
+
         <select id="step" name="step" onchange="onStepChange()">
             <c:forEach var="step" items="${pipelineBean.getPartsAfter(specifed)}">
                 <option value="${step.name}">${step.name}</option>
@@ -57,7 +75,7 @@
                             <legend><c:out value="${step.name}" /></legend>
                             <c:forEach var="parameter" items="${step.parameters}">
                                 <div id='<c:out value="${step.name}__${parameter.name}__div" />' style='border-width: 0; border-style : solid; border-color : black'>
-                                    <c:if test="${parameter.type == 'string'}">
+                                    <c:if test="${parameter.type == 'select'}">
                                         <label for="<c:out value="${step.name}__${parameter.name}" />"><c:out value="${parameter.name}" /></label>
                                         <select id="<c:out value="$${step.name}__${parameter.name}" />" name="<c:out value="${parameter.name}" />">
                                             <option value="${parameter.value}" selected>${parameter.value}</option>
