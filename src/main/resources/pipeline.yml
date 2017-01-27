@@ -1,4 +1,6 @@
 name: "Green Pipeline Run View"
+description: |
+    The Green Pipeline allows a user to run joint_ere, enie, or both; merge the data if both are used; and generate visualization of the individual and merged output.
 parts:
     input:
         requires: []
@@ -11,33 +13,23 @@ parts:
     joint_ere:
         requires:
             - input
-        page: joint_ere.jsp
+        page: JointEre
         parameters: []
-#            - parameter:
-#                name: dummy1
-#                value: dummy1Value1
-#                type: select
-#                values: [dummy1Value1, dummy1Value2, dummy1Value3]
-#            - parameter:
-#                name: dummy2
-#                value: dummy2Value1
-#                type: select
-#                values: [dummy2Value1, dummy2Value2, dummy2Value3]
     enie:
         requires:
             - input
-        page: enie.jsp
+        page: ENIE
         parameters: []
     merge:
         requires:
             - input
             - joint_ere
             - enie
-        page: merge.jsp
+        page: Merge
         parameters: []
     visualize:
         requires:
             - input
-        page: visualize.jsp
+        page: Visualize
         parameters: []
         multi-run: true

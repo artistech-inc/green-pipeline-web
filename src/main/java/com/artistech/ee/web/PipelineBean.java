@@ -169,6 +169,10 @@ public class PipelineBean {
         return map.get("name").toString();
     }
 
+    public String getDescription() {
+        return map.get("description").toString();
+    }
+
     public int getIndex() {
         return index;
     }

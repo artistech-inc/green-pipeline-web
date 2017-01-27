@@ -43,18 +43,20 @@
 
     <body onload="onStepChange()">
         <h1><c:out value="${pipelineBean.name}" /></h1>
+        <c:out value="${pipelineBean.description}" />
+        <h2>Configuration</h2>
         <c:if test="${not empty dataBean.data}">
             <c:forEach var="part" items="${dataBean.data.currentParts}">
                 <div>
                     <fieldset class='fieldset-auto-width'>
                         <legend><c:out value="${part.name}" /></legend>
                         <ul>
-                        <c:if test="${fn:length(part.parameters) eq 0}">
-                            <li>No Parameters</li>
-                        </c:if>
-                        <c:forEach var="parameter" items="${part.parameters}">
-                            <li><c:out value="${parameter.name}" />: <c:out value="${parameter.value}" /></li>
-                        </c:forEach>
+                            <c:if test="${fn:length(part.parameters) eq 0}">
+                                <li>No Parameters</li>
+                                </c:if>
+                                <c:forEach var="parameter" items="${part.parameters}">
+                                <li><c:out value="${parameter.name}" />: <c:out value="${parameter.value}" /></li>
+                                </c:forEach>
                         </ul>
                     </fieldset>
                 </div>
@@ -102,7 +104,15 @@
             </form>
         </div>
     </c:forEach>
-    <hr />
-    <input type="button" value="<c:out value="${pipelineBean.name}" />" />
+    <c:if test="${not empty dataBean.data}">
+        <!--This is assuming that currentParts(0) is the current page...-->
+        <c:if test="${fn:length(dataBean.data.currentParts) gt 1}">
+            <h2>Run Configuration</h2>
+            <form method="POST" action="${dataBean.data.currentParts.get(1).page}" id="run" name="run" enctype="multipart/form-data">
+                <input type="hidden" name="pipeline_id" value="<c:out value="${param.pipeline_id}" />" />
+                <input type="submit" value="<c:out value="${pipelineBean.name}" />" />
+            </form>
+        </c:if>
+    </c:if>
 </body>
 </html>
