@@ -24,6 +24,7 @@ public class Data {
     public static final String VISUALIZATION_DIR = "viz_out";
     public static final String TEST_LIST = "test_list";
     public String dataDir = "";
+    private final ArrayList<PipelineBean.Part> path;
 
     private Calendar last_use;
     private final String key;
@@ -33,6 +34,7 @@ public class Data {
     public Data(String key) {
         this.key = key;
         last_use = Calendar.getInstance();
+        path = new ArrayList<>();
     }
 
     /**
@@ -207,5 +209,26 @@ public class Data {
 
     public void setProc(ExternalProcess value) {
         proc = value;
+    }
+    
+    public ArrayList<PipelineBean.Part> getPipelineParts() {
+        return path;
+    }
+
+    public void setPipelineParts(ArrayList<PipelineBean.Part> parts) {
+        path.clear();
+        path.addAll(parts);
+    }
+    
+    void addPart(PipelineBean.Part part) {
+        path.add(part);
+    }
+
+    public ArrayList<String> getCurrentPath() {
+        ArrayList<String> ret = new ArrayList<>();
+        for (PipelineBean.Part p : this.path) {
+            ret.add(p.getName());
+        }
+        return ret;
     }
 }

@@ -85,7 +85,7 @@ public class UploadServlet extends HttpServlet {
             String submittedFileName = part1.getSubmittedFileName();
             if ("".equals(submittedFileName)) {
                 // displays done.jsp page after upload finished
-                getServletContext().getRequestDispatcher("/index.jsp").forward(
+                getServletContext().getRequestDispatcher("/index.jsp?pipeline_id=" + pipeline_id).forward(
                         request, response);
             }
 

@@ -34,7 +34,13 @@
             }
         </script>
     </head>
-    <c:set value="${[]}" var="specifed" />
+    <c:if test="${empty dataBean.data}">
+        <c:set value="${[]}" var="specifed" />
+    </c:if>
+    <c:if test="${not empty dataBean.data}">
+        <c:set value="${dataBean.data.currentPath}" var="specifed" />
+    </c:if>
+    
     <body onload="onStepChange()">
         <h1><c:out value="${pipelineBean.name}" /></h1>
         <select id="step" name="step" onchange="onStepChange()">
@@ -71,6 +77,7 @@
                         </fieldset>
                     </c:if>
                     <br />
+                    <input type="hidden" name="pipeline_id" value="<c:out value="${param.pipeline_id}" />" />
                     <input type="hidden" name="step_name" value="<c:out value="${step.name}" />" />
                     <input type="submit" value="Add Step" />
                 </form>
