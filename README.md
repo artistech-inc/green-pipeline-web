@@ -2,7 +2,7 @@
 
 This is a web-app which will utilize various 3rd party apps/scripts for extracting entity information from documents.
 
-## Version 1.1
+## Version 1.2
 
 - Upload file capability
 - Joint ERE and ENIE servlets, moderately configured with defaults.
@@ -11,6 +11,7 @@ This is a web-app which will utilize various 3rd party apps/scripts for extracti
 - Run Pipeline
 - Allow parameters to be set or Pipeline altered
 - Output intermediary stages
+- Pipeline Run View
 
 ## Downloading
 
@@ -40,7 +41,7 @@ mvn clean package
 
 ## Deployment
 
-The output from compilation is in the `target/` directory as `green-pipeline-web-1.1.war`. This war can be deployed to Tomcat's `webapps` directory. Once deployed, it can be accessed via `http://<ip_address:port>/green-pipeline-web-1.1/`.
+The output from compilation is in the `target/` directory as `green-pipeline-web-1.2.war`. This war can be deployed to Tomcat's `webapps` directory. Once deployed, it can be accessed via `http://<ip_address:port>/green-pipeline-web-1.2/`.
 
 ## Bugs
 
