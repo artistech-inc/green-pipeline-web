@@ -76,6 +76,10 @@
         <servlet-name>KillProcess</servlet-name>
         <servlet-class>com.artistech.ee.web.KillProcess</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>PathBuild</servlet-name>
+        <servlet-class>com.artistech.ee.web.PathBuild</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>JointEre</servlet-name>
         <url-pattern>/JointEre</url-pattern>
@@ -115,6 +119,10 @@
     <servlet-mapping>
         <servlet-name>KillProcess</servlet-name>
         <url-pattern>/KillProcess</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PathBuild</servlet-name>
+        <url-pattern>/PathBuild</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

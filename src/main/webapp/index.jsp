@@ -1,13 +1,21 @@
 <!--
  * Copyright 2017 ArtisTech, Inc.
 -->
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
+    <jsp:useBean scope="request" class="com.artistech.ee.web.DataManager" id="dataBean" type="com.artistech.ee.web.DataManager">
+        <jsp:setProperty name="dataBean" property="*" />
+    </jsp:useBean>
+    <jsp:useBean scope="request" class="com.artistech.ee.web.PipelineBean" id="pipelineBean" type="com.artistech.ee.web.PipelineBean">
+        <jsp:setProperty name="pipelineBean" property="*" />
+    </jsp:useBean>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-        <title>File Upload</title>
+        <title><c:out value="${pipelineBean.name}" /></title>
         <link rel='stylesheet' href='style.css' type='text/css'>
+        <script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
         <script type="text/javascript">
             function guid() {
                 return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -16,14 +24,14 @@
                 });
             }
             function onload() {
-                console.log("pipeline_id: " + guid());
-                document.getElementById("pipeline_id").value = guid();
+                $("#pipeline_link").attr('href', 'pipeline.jsp?pipeline_id=' + guid());
+                console.log($("#pipeline_link").attr('href'));
             }
         </script>
         <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     </head>
     <body onload="onload()">
-        <h1>Green Pipeline Run View</h1>
+        <h1><c:out value="${pipelineBean.name}" /></h1>
         Web app for processing through the green pipeline involving joint_ere_release and ENIE.
         <div>
             <h2>View Data</h2>
@@ -31,14 +39,15 @@
         </div>
         <div>
             <h2>Run Data</h2>
-            <hr />
+            <a id="pipeline_link" href="pipeline.jsp">Run Data</a>
+<!--            <hr />
             <form method="post" action="UploadServlet" enctype="multipart/form-data">
                 <input type="hidden" name="step" id="step" value="/hub.jsp" />
                 Select SGM file to upload:
                 <input type="hidden" name="pipeline_id" id="pipeline_id"/>
                 <input type="file" name="dataFile" id="fileChooser"/><br/><br/>
                 <input type="submit" value="Upload" />
-            </form>
+            </form>-->
         </div>
     </body>
 </html>

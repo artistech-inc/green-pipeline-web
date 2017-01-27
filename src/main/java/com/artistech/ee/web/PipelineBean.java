@@ -10,10 +10,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.collections4.CollectionUtils;
 
 /**
  *
@@ -23,35 +27,52 @@ public class PipelineBean {
 
     private Map map;
     private final Map<String, Part> parts;
-    private final ArrayList<Part> path;
+//    private final ArrayList<Part> path;
     private int index;
 
     public class Part {
 
-        private final Map partMap;
+        private final boolean mutiRun;
+//        private final Map partMap;
         private final String name;
         private final Map<String, Parameter> params;
+        private final String page;
+        private final String[] requires;
+
+        public Part(Part copy) {
+            this.name = copy.name;
+            this.mutiRun = copy.mutiRun;
+            this.page = copy.page;
+            this.requires = copy.requires;
+            params = new HashMap<>();
+            for (String key : copy.params.keySet()) {
+                this.params.put(key, copy.params.get(key).copy());
+            }
+        }
 
         public Part(String name, Map map) {
-            partMap = map;
+//            partMap = map;
             this.name = name;
             params = new HashMap<>();
+            page = map.get("page").toString();
             ArrayList paramsObj = (ArrayList) map.get("parameters");
-            ArrayList<Parameter> ret = new ArrayList<>();
+//            ArrayList<Parameter> ret = new ArrayList<>();
+            mutiRun = map.containsKey("multi-run") ? Boolean.parseBoolean(map.get("multi-run").toString()) : false;
             for (Object param : paramsObj) {
                 Map m = (Map) ((Map) param).get("parameter");
                 Parameter p = new Parameter(m.get("name").toString(), m);
                 params.put(p.getName(), p);
             }
+            ArrayList list = (ArrayList) map.get("requires");
+            requires = (String[]) list.toArray(new String[]{});
         }
 
         public String[] getRequires() {
-            ArrayList list = (ArrayList) partMap.get("requires");
-            return (String[]) list.toArray(new String[]{});
+            return requires;
         }
 
         public String getPage() {
-            return partMap.get("page").toString();
+            return page;
         }
 
         public String getName() {
@@ -65,24 +86,37 @@ public class PipelineBean {
         public Parameter getParameter(String name) {
             return params.get(name);
         }
+
+        Part copy() {
+            return new Part(this);
+        }
     }
 
     public class Parameter {
 
-        private final Map partMap;
         private final String name;
         private String value;
         private final ArrayList<String> values;
+        private final String type;
+
+        public Parameter(Parameter copy) {
+            this.name = copy.name;
+            this.value = copy.value;
+            this.values = new ArrayList<>(copy.values);
+            this.type = copy.type;
+        }
 
         public Parameter(String name, Map map) {
-            partMap = map;
+            type = map.get("type").toString();
             this.name = name;
             values = new ArrayList<>();
             ArrayList vals = (ArrayList) map.get("values");
-            for (Object obj : vals) {
-                values.add(obj.toString());
+            if (vals != null) {
+                for (Object obj : vals) {
+                    values.add(obj.toString());
+                }
             }
-            value = partMap.get("value").toString();
+            value = map.get("value").toString();
         }
 
         public String getName() {
@@ -100,11 +134,19 @@ public class PipelineBean {
         public String[] getValues() {
             return values.toArray(new String[]{});
         }
+
+        public String getType() {
+            return type;
+        }
+
+        Parameter copy() {
+            return new Parameter(this);
+        }
     }
 
     public PipelineBean() {
         parts = new HashMap<>();
-        path = new ArrayList<>();
+//        path = new ArrayList<>();
         try {
             URL resource = Thread.currentThread().getContextClassLoader().getResource("pipeline.yml");
             BufferedReader in = new BufferedReader(new InputStreamReader(resource.openStream()));
@@ -135,12 +177,67 @@ public class PipelineBean {
         this.index = value;
     }
 
-    public Part[] getPath() {
-        return path.toArray(new Part[]{});
+//    public Part[] getPath() {
+//        return path.toArray(new Part[]{});
+//    }
+
+    public Part[] getParts() {
+        return parts.values().toArray(new Part[]{});
     }
 
-    public static void main(String[] args) {
-        PipelineBean pb = new PipelineBean();
-        System.out.println(pb.map.get("name"));
+    public Part[] getPartsAfter(ArrayList<String> done) {
+//        List<String> done = Arrays.asList(after);
+        ArrayList<Part> ret = new ArrayList<>();
+        for (Part p : parts.values()) {
+            List<String> reqs = Arrays.asList(p.getRequires());
+            Collection<String> subtract = CollectionUtils.subtract(reqs, done);
+            if (subtract.isEmpty()) {
+                if (p.mutiRun || !done.contains(p.getName())) {
+                    ret.add(p);
+                }
+            }
+        }
+        return ret.toArray(new Part[]{});
     }
+
+    public Part[] getPartsAfter(String[] after) {
+        List<String> done = Arrays.asList(after);
+        ArrayList<Part> ret = new ArrayList<>();
+        for (Part p : parts.values()) {
+            List<String> reqs = Arrays.asList(p.getRequires());
+            Collection<String> subtract = CollectionUtils.subtract(reqs, done);
+            if (subtract.isEmpty()) {
+                if (p.mutiRun || !done.contains(p.getName())) {
+                    ret.add(p);
+                }
+            }
+        }
+        return ret.toArray(new Part[]{});
+    }
+
+    public Part createPart(String name) {
+        return parts.get(name).copy();
+    }
+
+//    public boolean addPart(Part p) {
+//        this.path.add(p);
+//        return true;
+//    }
+
+//    public ArrayList<String> getCurrentPath() {
+//        ArrayList<String> ret = new ArrayList<>();
+//        for (Part p : this.path) {
+//            ret.add(p.name);
+//        }
+//        return ret;
+//    }
+//
+//    public static void main(String[] args) {
+//        PipelineBean pb = new PipelineBean();
+//        System.out.println(pb.map.get("name"));
+//        Part[] partsAfter = pb.getPartsAfter(new String[]{"input"});
+//        for (Part p : partsAfter) {
+//            System.out.println(p.getName());
+//        }
+//    }
 }

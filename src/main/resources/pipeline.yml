@@ -3,7 +3,11 @@ parts:
     input:
         requires: []
         page: pipeline.jsp
-        parameters: []
+        parameters:
+            - parameter:
+                name: SGM_File
+                value: ""
+                type: file
     joint_ere:
         requires:
             - input
@@ -12,10 +16,12 @@ parts:
             - parameter:
                 name: dummy1
                 value: dummy1Value1
+                type: string
                 values: [dummy1Value1, dummy1Value2, dummy1Value3]
             - parameter:
                 name: dummy2
                 value: dummy2Value1
+                type: string
                 values: [dummy2Value1, dummy2Value2, dummy2Value3]
     enie:
         requires:
@@ -34,3 +40,4 @@ parts:
             - input
         page: visualize.jsp
         parameters: []
+        multi-run: true

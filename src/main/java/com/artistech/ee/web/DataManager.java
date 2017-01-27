@@ -9,7 +9,7 @@ import java.util.TreeMap;
 
 /**
  * Used in tomcat and jetty.
- * 
+ *
  * This class used to manage pipeline builders.
  *
  * @author matta
@@ -21,6 +21,9 @@ public class DataManager {
 
     private String pipeline_id;
 
+    public DataManager() {
+    }
+
     public static void setDataPath(String value) {
         dataPath = value;
     }
@@ -28,30 +31,30 @@ public class DataManager {
     public static String getDataPath() {
         return dataPath;
     }
-    
+
     public synchronized String[] getStoredData() {
         ArrayList<Data> ret = new ArrayList<>(DATAS.values());
         ArrayList<String> stored = new ArrayList<>();
         File f = new File(getDataPath());
         if (f.exists()) {
-            for(File file : f.listFiles()) {
+            for (File file : f.listFiles()) {
                 String id = file.getName();
                 stored.add(id);
             }
         }
-        for(Data data : ret) {
-            if(stored.contains(data.getKey())) {
+        for (Data data : ret) {
+            if (stored.contains(data.getKey())) {
                 stored.remove(data.getKey());
             }
         }
-        for(String key : stored) {
+        for (String key : stored) {
             Data d = new Data(key);
             d.setPipelineDir(getDataPath());
             ret.add(d);
             DATAS.put(key, d);
         }
         ArrayList<String> ids = new ArrayList<>();
-        for(Data data : ret) {
+        for (Data data : ret) {
             ids.add(data.getKey());
         }
         return ids.toArray(new String[]{});
@@ -59,17 +62,19 @@ public class DataManager {
 
     /**
      * Get all registered Data objects.
-     * @return 
-     */    
+     *
+     * @return
+     */
     public synchronized ArrayList<Data> getAllData() {
         ArrayList<Data> ret = new ArrayList<>(DATAS.values());
         return ret;
     }
-    
+
     /**
      * Get the Data object with the specified id.
+     *
      * @param id
-     * @return 
+     * @return
      */
     public static synchronized Data getData(String id) {
         if (id != null && DATAS.containsKey(id)) {
@@ -83,8 +88,9 @@ public class DataManager {
 
     /**
      * Set the Data object with the specified id.
+     *
      * @param id
-     * @param data 
+     * @param data
      */
     public static synchronized void setData(String id, Data data) {
         if (id != null) {
@@ -94,8 +100,9 @@ public class DataManager {
 
     /**
      * Check if the Data with the specified object exists.
+     *
      * @param id
-     * @return 
+     * @return
      */
     public static synchronized boolean containsData(String id) {
         return id != null ? DATAS.containsKey(id) : false;
@@ -104,7 +111,8 @@ public class DataManager {
 
     /**
      * Get the algolink id.
-     * @return 
+     *
+     * @return
      */
     public String getPipeline_id() {
         return pipeline_id;
@@ -112,7 +120,8 @@ public class DataManager {
 
     /**
      * Set the algolink id.
-     * @param value 
+     *
+     * @param value
      */
     public void setPipeline_id(String value) {
         pipeline_id = value;
@@ -120,7 +129,8 @@ public class DataManager {
 
     /**
      * Get the Data associated with the current algolink id.
-     * @return 
+     *
+     * @return
      */
     public Data getData() {
         if (pipeline_id != null && DataManager.containsData(pipeline_id)) {
@@ -133,7 +143,8 @@ public class DataManager {
 
     /**
      * Set the Data with the current algolink id.
-     * @param value 
+     *
+     * @param value
      */
     public void setData(Data value) {
         if (pipeline_id != null) {
@@ -143,7 +154,8 @@ public class DataManager {
 
     /**
      * Remove Data with the specified id.
-     * @param id 
+     *
+     * @param id
      */
     public static void removeData(String id) {
         DATAS.remove(id);
