@@ -1,7 +1,7 @@
 /*
  * Copyright 2017 ArtisTech, Inc.
  */
-package com.artistech.ee.web;
+package com.artistech.ee.green;
 
 import com.artistech.ee.beans.Data;
 import com.artistech.ee.beans.DataManager;

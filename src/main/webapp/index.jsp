@@ -40,14 +40,6 @@
         <div>
             <h2>Run Data</h2>
             <a id="pipeline_link" href="pipeline.jsp">Run Data</a>
-<!--            <hr />
-            <form method="post" action="UploadServlet" enctype="multipart/form-data">
-                <input type="hidden" name="step" id="step" value="/hub.jsp" />
-                Select SGM file to upload:
-                <input type="hidden" name="pipeline_id" id="pipeline_id"/>
-                <input type="file" name="dataFile" id="fileChooser"/><br/><br/>
-                <input type="submit" value="Upload" />
-            </form>-->
         </div>
     </body>
 </html>

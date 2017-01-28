@@ -2,7 +2,7 @@
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
     <servlet>
         <servlet-name>JointEre</servlet-name>
-        <servlet-class>com.artistech.ee.web.JointEre</servlet-class>
+        <servlet-class>com.artistech.ee.green.JointEre</servlet-class>
         <init-param>
             <param-name>path</param-name>
             <param-value>/work/Documents/FOUO/EntityExtraction/joint_ere</param-value>
@@ -18,7 +18,7 @@
     </servlet>
     <servlet>
         <servlet-name>ENIE</servlet-name>
-        <servlet-class>com.artistech.ee.web.ENIE</servlet-class>
+        <servlet-class>com.artistech.ee.green.ENIE</servlet-class>
         <init-param>
             <param-name>path</param-name>
             <param-value>/work/Documents/FOUO/EntityExtraction/ENIE</param-value>
@@ -38,7 +38,7 @@
     </servlet>
     <servlet>
         <servlet-name>Merge</servlet-name>
-        <servlet-class>com.artistech.ee.web.Merge</servlet-class>
+        <servlet-class>com.artistech.ee.green.Merge</servlet-class>
         <init-param>
             <param-name>path</param-name>
             <param-value>/work/Documents/FOUO/EntityExtraction/joint_ere</param-value>
@@ -50,7 +50,7 @@
     </servlet>
     <servlet>
         <servlet-name>Visualize</servlet-name>
-        <servlet-class>com.artistech.ee.web.Visualize</servlet-class>
+        <servlet-class>com.artistech.ee.green.Visualize</servlet-class>
         <init-param>
             <param-name>path</param-name>
             <param-value>/work/Documents/FOUO/EntityExtraction/green_pipeline/visualization</param-value>
