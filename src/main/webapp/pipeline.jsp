@@ -6,10 +6,10 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
-    <jsp:useBean scope="request" class="com.artistech.ee.web.DataManager" id="dataBean" type="com.artistech.ee.web.DataManager">
+    <jsp:useBean scope="request" class="com.artistech.ee.beans.DataManager" id="dataBean" type="com.artistech.ee.beans.DataManager">
         <jsp:setProperty name="dataBean" property="*" />
     </jsp:useBean>
-    <jsp:useBean scope="request" class="com.artistech.ee.web.PipelineBean" id="pipelineBean" type="com.artistech.ee.web.PipelineBean">
+    <jsp:useBean scope="request" class="com.artistech.ee.beans.PipelineBean" id="pipelineBean" type="com.artistech.ee.beans.PipelineBean">
         <jsp:setProperty name="pipelineBean" property="*" />
     </jsp:useBean>
     <head>

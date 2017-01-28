@@ -1,4 +1,4 @@
-package com.artistech.ee.web;
+package com.artistech.utils;
 
 /*
  * This work is licensed under the Creative Commons Attribution 3.0 Unported

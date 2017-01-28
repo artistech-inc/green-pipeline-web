@@ -1,8 +1,10 @@
 /*
  * Copyright 2017 ArtisTech, Inc.
  */
-package com.artistech.ee.web;
+package com.artistech.ee.beans;
 
+import com.artistech.utils.ExternalProcess;
+import com.artistech.utils.StreamGobbler;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;

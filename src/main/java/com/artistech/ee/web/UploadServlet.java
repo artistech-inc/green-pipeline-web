@@ -3,6 +3,8 @@
  */
 package com.artistech.ee.web;
 
+import com.artistech.ee.beans.DataManager;
+import com.artistech.ee.beans.Data;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;

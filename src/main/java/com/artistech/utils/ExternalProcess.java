@@ -1,7 +1,9 @@
 /*
  * Copyright 2017 ArtisTech, Inc.
  */
-package com.artistech.ee.web;
+package com.artistech.utils;
+
+import com.artistech.utils.StreamGobbler;
 
 /**
  *
