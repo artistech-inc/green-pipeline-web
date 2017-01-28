@@ -36,7 +36,9 @@ public class ViewRaw extends HttpServlet {
         File ftest = new File(file);
         if (file.endsWith(".xml")) {
             response.setContentType("text/xml;charset=UTF-8");
-        } else {
+        } else if (file.endsWith(".html")) {
+            response.setContentType("text/html;charset=UTF-8");
+        } else if (file.endsWith(".html")) {
             response.setContentType("text/plain;charset=UTF-8");
         }
         if (ftest.exists()) {
