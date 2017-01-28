@@ -196,6 +196,7 @@ public class Visualize extends HttpServlet {
         t.start();
         ExternalProcess ex_proc = new ExternalProcess(sg, t);
         data.setProc(ex_proc);
+        data.setPipelineIndex(data.getPipelineIndex() + 1);
 
 //        Part part = request.getPart("step");
 //        String target = IOUtils.toString(part.getInputStream(), "UTF-8");

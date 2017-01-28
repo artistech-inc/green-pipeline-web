@@ -18,6 +18,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
 
 /**
+ * As of 1.2, this should be obselete.
  *
  * @author matta
  */

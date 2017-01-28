@@ -25,6 +25,7 @@ public class Data {
     public static final String TEST_LIST = "test_list";
     public String dataDir = "";
     private final ArrayList<PipelineBean.Part> path;
+    private int index;
 
     private Calendar last_use;
     private final String key;
@@ -35,6 +36,7 @@ public class Data {
         this.key = key;
         last_use = Calendar.getInstance();
         path = new ArrayList<>();
+        index = 1; //assume that step 0 is input!!
     }
 
     /**
@@ -231,7 +233,16 @@ public class Data {
         }
         return ret;
     }
+
     public ArrayList<PipelineBean.Part> getCurrentParts() {
         return path;
+    }
+    
+    public int getPipelineIndex() {
+        return index;
+    }
+    
+    public void setPipelineIndex(int value) {
+        index = value;
     }
 }

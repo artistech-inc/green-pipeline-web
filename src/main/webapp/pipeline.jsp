@@ -109,6 +109,7 @@
         <c:if test="${fn:length(dataBean.data.currentParts) gt 1}">
             <h2>Run Configuration</h2>
             <form method="POST" action="${dataBean.data.currentParts.get(1).page}" id="run" name="run" enctype="multipart/form-data">
+                <input type="hidden" name="index" value="1" />
                 <input type="hidden" name="pipeline_id" value="<c:out value="${param.pipeline_id}" />" />
                 <input type="submit" value="<c:out value="${pipelineBean.name}" />" />
             </form>

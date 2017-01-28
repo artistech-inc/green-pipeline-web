@@ -56,6 +56,10 @@ public class JointEre extends HttpServlet {
         sg.start();
         ExternalProcess ex_proc = new ExternalProcess(sg, proc);
         data.setProc(ex_proc);
+
+//        Part index_part = request.getPart("pipeline_id");
+//        int index = Integer.parseInt(IOUtils.toString(index_part.getInputStream(), "UTF-8"));
+        data.setPipelineIndex(data.getPipelineIndex() + 1);
 //        try {
 //            proc.waitFor();
 //        } catch (InterruptedException ex) {
