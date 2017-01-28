@@ -9,6 +9,9 @@
     <jsp:useBean scope="request" class="com.artistech.ee.beans.DataManager" id="dataBean" type="com.artistech.ee.beans.DataManager">
         <jsp:setProperty name="dataBean" property="*" />
     </jsp:useBean>
+    <jsp:useBean scope="request" class="com.artistech.ee.beans.PipelineBean" id="pipelineBean" type="com.artistech.ee.beans.PipelineBean">
+        <jsp:setProperty name="pipelineBean" property="*" />
+    </jsp:useBean>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
         <title>Hub</title>
@@ -19,9 +22,7 @@
         <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     </head>
     <body>
-        <h1>Hub:</h1>
-        Your pipeline_id is: <c:out value="${dataBean.pipeline_id}" />
-        <h2>Pipeline Done</h2>
+        <h1><c:out value="${pipelineBean.name}" />: Data</h1>
         <c:forEach var="dataDir" items="${dataBean.data.keys}">
             <c:if test="${fn:length(dataBean.data.getFiles(dataDir)) gt 0}">
                 <ul><kbd><c:out value="${dataDir}"/></kbd> Files:
@@ -31,22 +32,5 @@
                 </ul>
             </c:if>
         </c:forEach>
-        <c:if test="${fn:length(dataBean.data.vizFiles) eq 0}">
-            <h2>Pipeline To Do</h2>
-            <ul>
-                <c:if test="${fn:length(dataBean.data.jointEreOutFiles) eq 0}">
-                    <li><a href="joint_ere.jsp?pipeline_id=<c:out value="${dataBean.pipeline_id}" />">joint_ere_release</a></li>
-                    </c:if>
-                    <c:if test="${fn:length(dataBean.data.enieOutFiles) eq 0}">
-                    <li><a href="enie.jsp?pipeline_id=<c:out value="${dataBean.pipeline_id}" />">enie</a></li>
-                    </c:if>
-                    <c:if test="${fn:length(dataBean.data.mergedFiles) eq 0 and
-                                  fn:length(dataBean.data.jointEreOutFiles) gt 0 and
-                                  fn:length(dataBean.data.enieOutFiles) gt 0}">
-                    <li><a href="merge.jsp?pipeline_id=<c:out value="${dataBean.pipeline_id}" />">merge</a></li>
-                    </c:if>
-                <li><a href="visualize.jsp?pipeline_id=<c:out value="${dataBean.pipeline_id}" />">visualize</a></li>
-            </ul>
-        </c:if>
     </body>
 </html>

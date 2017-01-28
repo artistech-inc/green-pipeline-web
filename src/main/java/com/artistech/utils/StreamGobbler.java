@@ -3,7 +3,6 @@
  */
 package com.artistech.utils;
 
-import com.artistech.utils.Mailbox;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,14 +1,14 @@
 /*
  * Copyright 2017 ArtisTech, Inc.
  */
-package com.artistech.ee.beans;
+package com.artistech.ee.web;
 
+import com.artistech.ee.beans.Data;
+import com.artistech.ee.beans.DataManager;
 import com.artistech.utils.ExternalProcess;
 import com.artistech.utils.StreamGobbler;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;

@@ -3,8 +3,6 @@
  */
 package com.artistech.utils;
 
-import com.artistech.utils.StreamGobbler;
-
 /**
  *
  * @author matta
