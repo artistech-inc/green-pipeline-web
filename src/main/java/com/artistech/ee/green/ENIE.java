@@ -43,7 +43,6 @@ public class ENIE extends HttpServlet {
         String input_sgm = data.getInput();
         String file_list = data.getTestList();
         String enie_out = data.getEnieOut();
-//        data.setEnieOut(enie_out);
         File output_dir = new File(enie_out);
         output_dir.mkdirs();
 
@@ -57,14 +56,6 @@ public class ENIE extends HttpServlet {
         sg.start();
         ExternalProcess ex_proc = new ExternalProcess(sg, proc);
         data.setProc(ex_proc);
-        data.setPipelineIndex(data.getPipelineIndex() + 1);
-//        try {
-//            proc.waitFor();
-//        } catch (InterruptedException ex) {
-//            Logger.getLogger(JointEre.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        Part part = request.getPart("step");
-//        String target = IOUtils.toString(part.getInputStream(), "UTF-8");
 
         // displays done.jsp page after upload finished
         getServletContext().getRequestDispatcher("/watchProcess.jsp").forward(

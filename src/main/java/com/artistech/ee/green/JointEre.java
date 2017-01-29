@@ -45,14 +45,12 @@ public class JointEre extends HttpServlet {
         String input_sgm = data.getInput();
         String file_list = data.getTestList();
         String joint_ere_out = data.getJointEreOut();
-//        data.setJointEreOut(joint_ere_out);
         File output_dir = new File(joint_ere_out);
         output_dir.mkdirs();
         //java -Xmx8G -cp ere-11-08-2016_small.jar:lib/\* edu.rpi.jie.ere.joint.Tagger /work/Documents/FOUO/EntityExtraction/joint_ere/models/joint/joint_model /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/input/ /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/test.list /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/joint_ere_out/
 
         //TODO: need to know "$INPUT_SGM", "$FILE_LIST", "$JERE_OUTP"
         ProcessBuilder pb = new ProcessBuilder("java", "-Xmx8G", "-cp", classpath, "edu.rpi.jie.ere.joint.Tagger", joint_ere_model, input_sgm, file_list, joint_ere_out);
-//        Map<String, String> environment = pb.environment();
         pb.directory(new File(joint_ere_path));
         pb.redirectErrorStream(true);
         Process proc = pb.start();
@@ -60,17 +58,6 @@ public class JointEre extends HttpServlet {
         sg.start();
         ExternalProcess ex_proc = new ExternalProcess(sg, proc);
         data.setProc(ex_proc);
-
-//        Part index_part = request.getPart("pipeline_id");
-//        int index = Integer.parseInt(IOUtils.toString(index_part.getInputStream(), "UTF-8"));
-        data.setPipelineIndex(data.getPipelineIndex() + 1);
-//        try {
-//            proc.waitFor();
-//        } catch (InterruptedException ex) {
-//            Logger.getLogger(JointEre.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        Part part = request.getPart("step");
-//        String target = IOUtils.toString(part.getInputStream(), "UTF-8");
 
         // displays done.jsp page after upload finished
         getServletContext().getRequestDispatcher("/watchProcess.jsp").forward(
