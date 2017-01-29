@@ -64,6 +64,18 @@
         <servlet-name>ViewRaw</servlet-name>
         <servlet-class>com.artistech.ee.web.ViewRaw</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ProcessOutput</servlet-name>
+        <servlet-class>com.artistech.ee.web.ProcessOutput</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ProcessMonitor</servlet-name>
+        <servlet-class>com.artistech.ee.web.ProcessMonitor</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>KillProcess</servlet-name>
+        <servlet-class>com.artistech.ee.web.KillProcess</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>JointEre</servlet-name>
         <url-pattern>/JointEre</url-pattern>
@@ -92,9 +104,24 @@
         <servlet-name>ViewRaw</servlet-name>
         <url-pattern>/ViewRaw</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ProcessOutput</servlet-name>
+        <url-pattern>/ProcessOutput</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ProcessMonitor</servlet-name>
+        <url-pattern>/ProcessMonitor</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>KillProcess</servlet-name>
+        <url-pattern>/KillProcess</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30
         </session-timeout>
     </session-config>
+    <listener>
+        <listener-class>com.artistech.ee.web.PipelineInit</listener-class>
+    </listener>
 </web-app>

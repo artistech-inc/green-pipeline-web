@@ -3,20 +3,18 @@
  */
 package com.artistech.ee.web;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.io.IOUtils;
 
 /**
  *
  * @author matta
  */
-public class ViewRaw extends HttpServlet {
+public class KillProcess extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -30,21 +28,15 @@ public class ViewRaw extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String pipeline_id = request.getParameter("pipeline_id");
-        String stage = request.getParameter("stage");
-        String file = request.getParameter("file");
         Data data = DataManager.getData(pipeline_id);
-        File ftest = new File(file);
-        if (file.endsWith(".xml")) {
-            response.setContentType("text/xml;charset=UTF-8");
-        } else {
-            response.setContentType("text/plain;charset=UTF-8");
+        boolean success = false;
+        if (data.getProc() != null && data.getProc().isAlive()) {
+            data.getProc().kill();
+            success = true;
         }
-        if (ftest.exists()) {
-            IOUtils.copy(new FileInputStream(ftest), response.getWriter(), "UTF-8");
-        } else {
-            String fileName = data.getData(stage) + File.separator + file;
-            File f = new File(fileName);
-            IOUtils.copy(new FileInputStream(f), response.getWriter(), "UTF-8");
+        response.setContentType("text/plain;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+            out.println(success);
         }
     }
 

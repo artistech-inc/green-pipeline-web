@@ -1,22 +1,22 @@
+package com.artistech.ee.web;
+
 /*
  * Copyright 2017 ArtisTech, Inc.
  */
-package com.artistech.ee.web;
 
-import java.io.File;
-import java.io.FileInputStream;
+
 import java.io.IOException;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.io.IOUtils;
 
 /**
  *
  * @author matta
  */
-public class ViewRaw extends HttpServlet {
+public class ProcessOutput extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -29,22 +29,16 @@ public class ViewRaw extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("text/plain;charset=UTF-8");
         String pipeline_id = request.getParameter("pipeline_id");
-        String stage = request.getParameter("stage");
-        String file = request.getParameter("file");
+//        String pipeline_id = IOUtils.toString(pipeline_id_part.getInputStream(), "UTF-8");
         Data data = DataManager.getData(pipeline_id);
-        File ftest = new File(file);
-        if (file.endsWith(".xml")) {
-            response.setContentType("text/xml;charset=UTF-8");
-        } else {
-            response.setContentType("text/plain;charset=UTF-8");
-        }
-        if (ftest.exists()) {
-            IOUtils.copy(new FileInputStream(ftest), response.getWriter(), "UTF-8");
-        } else {
-            String fileName = data.getData(stage) + File.separator + file;
-            File f = new File(fileName);
-            IOUtils.copy(new FileInputStream(f), response.getWriter(), "UTF-8");
+
+        try (PrintWriter out = response.getWriter()) {
+            if(data.getProc() != null) {
+                String updateText = data.getProc().getGobbler().getUpdateText();
+                out.print(updateText);
+            }
         }
     }
 

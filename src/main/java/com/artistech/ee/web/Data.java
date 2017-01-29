@@ -4,8 +4,12 @@
 package com.artistech.ee.web;
 
 import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -13,9 +17,18 @@ import java.util.HashMap;
  */
 public class Data {
 
+    public static final String INPUT_DIR = "input";
+    public static final String ENIE_DIR = "enie_out";
+    public static final String JOINT_ERE_DIR = "joint_ere_out";
+    public static final String MERGE_DIR = "merge_out";
+    public static final String VISUALIZATION_DIR = "viz_out";
+    public static final String TEST_LIST = "test_list";
+    public String dataDir = "";
+
     private Calendar last_use;
     private final String key;
-    private final HashMap<String, String> map = new HashMap<>();
+//    private final HashMap<String, String> map = new HashMap<>();
+    private ExternalProcess proc;
 
     public Data(String key) {
         this.key = key;
@@ -46,111 +59,153 @@ public class Data {
     }
 
     public String getTestList() {
-        return map.get("gest_list");
+        return getPipelineDir() + File.separator + TEST_LIST;
     }
 
-    public void setTestList(String value) {
-        map.put("gest_list", value);
-    }
-
+//    public void setTestList(String value) {
+//        map.put("test_list", value);
+//    }
     public String getPipelineDir() {
-        return map.get("pipeline_dir");
+        return dataDir;
     }
 
     public void setPipelineDir(String value) {
-        map.put("pipeline_dir", value);
+        dataDir = value + File.separator + key;
+        File f = new File(dataDir);
+        f.mkdirs();
     }
 
     public String getInput() {
-        return map.get("input");
+        return getPipelineDir() + File.separator + INPUT_DIR;
     }
 
-    public void setInput(String value) {
-        map.put("input", value);
-    }
+//    public void setInput(String value) {
+////        map.put("input", value);
+//    }
 
     public String[] getInputFiles() {
-        if (map.containsKey("input")) {
-            File f = new File(map.get("input"));
+        File f = new File(getInput());
+        if (f.exists()) {
             return f.list();
         }
         return new String[]{};
     }
 
     public String getJointEreOut() {
-        return map.get("joint_ere_out");
+        return getPipelineDir() + File.separator + JOINT_ERE_DIR;
     }
 
-    public void setJointEreOut(String value) {
-        map.put("joint_ere_out", value);
-    }
+//    public void setJointEreOut(String value) {
+////        map.put("joint_ere_out", value);
+//    }
 
     public String[] getJointEreOutFiles() {
-        if (map.containsKey("joint_ere_out")) {
-            File f = new File(map.get("joint_ere_out"));
+        File f = new File(getJointEreOut());
+        if (f.exists()) {
             return f.list();
         }
         return new String[]{};
     }
 
     public String getEnieOut() {
-        return map.get("enie_out");
+        return getPipelineDir() + File.separator + ENIE_DIR;
     }
 
-    public void setEnieOut(String value) {
-        map.put("enie_out", value);
-    }
+//    public void setEnieOut(String value) {
+////        map.put("enie_out", value);
+//    }
 
     public String[] getEnieOutFiles() {
-        if (map.containsKey("enie_out")) {
-            File f = new File(map.get("enie_out"));
+        File f = new File(getEnieOut());
+        if (f.exists()) {
             return f.list();
         }
         return new String[]{};
     }
 
     public String getMergeOut() {
-        return map.get("merge_out");
+        return getPipelineDir() + File.separator + MERGE_DIR;
     }
-
-    public void setMergeOut(String value) {
-        map.put("merge_out", value);
-    }
+//
+//    public void setMergeOut(String value) {
+////        map.put("merge_out", value);
+//    }
 
     public String[] getMergedFiles() {
-        if (map.containsKey("merge_out")) {
-            File f = new File(map.get("merge_out"));
+        File f = new File(getMergeOut());
+        if (f.exists()) {
             return f.list();
         }
         return new String[]{};
     }
 
     public String getVizOut() {
-        return map.get("viz_out");
+        return getPipelineDir() + File.separator + VISUALIZATION_DIR;
     }
 
-    public void setVizOut(String value) {
-        map.put("viz_out", value);
-    }
+//    public void setVizOut(String value) {
+////        map.put("viz_out", value);
+//    }
 
     public String[] getVizFiles() {
-        if (map.containsKey("viz_out")) {
-            File f = new File(map.get("viz_out"));
+        File f = new File(getVizOut());
+        if (f.exists()) {
+            return f.list();
+        }
+        return new String[]{};
+    }
+
+    public String[] getFiles(String key) {
+        File f = new File(getData(key));
+        if (f.exists() && f.isDirectory()) {
             return f.list();
         }
         return new String[]{};
     }
 
     public String getData(String key) {
-        return map.get(key);
-    }
-
-    public String[] getFiles(String key) {
-        File f = new File(map.get(key));
-        return f.list();
+        return getPipelineDir() + File.separator + key;
     }
 
     public String[] getKeys() {
-        return map.keySet().toArray(new String[]{});
+        ArrayList<String> keys = new ArrayList<>();
+        Field[] fields = Data.class.getFields();
+        for (Field f : fields) {
+            int modifiers = f.getModifiers();
+            if ((modifiers & (Modifier.STATIC | Modifier.FINAL))
+                    == (Modifier.STATIC | Modifier.FINAL)) {
+                try {
+                    keys.add(f.get(null).toString());
+                } catch (IllegalArgumentException | IllegalAccessException ex) {
+                    Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        return keys.toArray(new String[]{});
+    }
+
+    public static String[] getDataKeys() {
+        ArrayList<String> keys = new ArrayList<>();
+        Field[] fields = Data.class.getFields();
+        for (Field f : fields) {
+            int modifiers = f.getModifiers();
+            if ((modifiers & (Modifier.STATIC | Modifier.FINAL))
+                    == (Modifier.STATIC | Modifier.FINAL)) {
+                try {
+                    keys.add(f.get(null).toString());
+                } catch (IllegalArgumentException | IllegalAccessException ex) {
+                    Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        return keys.toArray(new String[]{});
+    }
+
+    public ExternalProcess getProc() {
+        return proc;
+    }
+
+    public void setProc(ExternalProcess value) {
+        proc = value;
     }
 }

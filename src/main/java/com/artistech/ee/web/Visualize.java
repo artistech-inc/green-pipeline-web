@@ -5,6 +5,10 @@ package com.artistech.ee.web;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -32,52 +36,171 @@ public class Visualize extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String viz_path = getInitParameter("path");
-        String classpath = getInitParameter("classpath");
+        final String viz_path = getInitParameter("path");
+//        String classpath = getInitParameter("classpath");
 
         Part pipeline_id_part = request.getPart("pipeline_id");
         String pipeline_id = IOUtils.toString(pipeline_id_part.getInputStream(), "UTF-8");
-        Data data = DataManager.getData(pipeline_id);
-        String file_list = data.getTestList();
-        String merge_out = data.getMergeOut();
+        final Data data = DataManager.getData(pipeline_id);
 
-        String viz_out = data.getPipelineDir() + File.separator + "viz_out";
-
-        File source = new File(data.getInput());
-        File dest = new File(data.getMergeOut());
-        try {
-            FileUtils.copyDirectory(source, dest);
-        } catch (IOException e) {
-            Logger.getLogger(Visualize.class.getName()).log(Level.SEVERE, null, e);
-        }
-
-        data.setVizOut(viz_out);
-        File viz_dir = new File(viz_out);
-        viz_dir.mkdirs();
-        //java -Xmx8G -cp ere-11-08-2016_small.jar:lib/\* edu.rpi.jie.ere.joint.Tagger /work/Documents/FOUO/EntityExtraction/joint_ere/models/joint/joint_model /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/input/ /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/test.list /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/joint_ere_out/
-
-        //TODO: need to know "$INPUT_SGM", "$FILE_LIST", "$JERE_OUTP"
-        //java -Xmx8G -cp $MERG_CPTH arl.workflow.combine.MergeEnieEre $FILE_LIST $INPUT_SGM "" $ENIE_OUTP $JERE_OUTP .xml .apf.xml $MERG_OUTP
-        ProcessBuilder pb = new ProcessBuilder("python3", "ere_visualizer.py", file_list, merge_out, viz_out);
-        for (String cmd : pb.command()) {
-            Logger.getLogger(Visualize.class.getName()).log(Level.WARNING, cmd);
-        }
-//        Map<String, String> environment = pb.environment();
-        pb.directory(new File(viz_path));
-        pb.redirectErrorStream(true);
-        Process proc = pb.start();
-        StreamGobbler sg = new StreamGobbler(proc.getInputStream(), "");
+        PipedInputStream in = new PipedInputStream();
+        final PipedOutputStream out = new PipedOutputStream(in);
+        StreamGobbler sg = new StreamGobbler(in);
         sg.start();
-        try {
-            proc.waitFor();
-        } catch (InterruptedException ex) {
-            Logger.getLogger(JointEre.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        Part part = request.getPart("step");
-        String target = IOUtils.toString(part.getInputStream(), "UTF-8");
 
+        final OutputStreamWriter bos = new OutputStreamWriter(out);
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                File source = new File(data.getInput());
+                File dest = new File(data.getMergeOut());
+                String file_list = data.getTestList();
+                String merge_out = data.getMergeOut();
+
+                String viz_out = data.getVizOut();
+
+                /**
+                 * MERGE VIZ!
+                 */
+                if (dest.exists()) {
+                    try {
+                        try {
+                            FileUtils.copyDirectory(source, dest);
+                        } catch (IOException e) {
+                            Logger.getLogger(Visualize.class.getName()).log(Level.SEVERE, null, e);
+                        }
+
+//        data.setVizOut(viz_out);
+                        File viz_dir = new File(viz_out);
+                        viz_dir.mkdirs();
+//java -Xmx8G -cp ere-11-08-2016_small.jar:lib/\* edu.rpi.jie.ere.joint.Tagger /work/Documents/FOUO/EntityExtraction/joint_ere/models/joint/joint_model /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/input/ /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/test.list /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/joint_ere_out/
+
+//TODO: need to know "$INPUT_SGM", "$FILE_LIST", "$JERE_OUTP"
+//java -Xmx8G -cp $MERG_CPTH arl.workflow.combine.MergeEnieEre $FILE_LIST $INPUT_SGM "" $ENIE_OUTP $JERE_OUTP .xml .apf.xml $MERG_OUTP
+                        ProcessBuilder pb = new ProcessBuilder("python3", "ere_visualizer.py", file_list, merge_out, viz_out);
+                        for (String cmd : pb.command()) {
+                            Logger.getLogger(Visualize.class.getName()).log(Level.WARNING, cmd);
+                        }
+//        Map<String, String> environment = pb.environment();
+                        pb.directory(new File(viz_path));
+                        pb.redirectErrorStream(true);
+                        Process proc = pb.start();
+                        StreamGobbler sg = new StreamGobbler(proc.getInputStream());
+                        sg.start();
+//                    ExternalProcess ex_proc = new ExternalProcess(sg, proc);
+//                    data.setProc(ex_proc);
+                        try {
+                            proc.waitFor();
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(JointEre.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        bos.write("MERGE VIZ" + System.lineSeparator());
+                        bos.write(sg.getUpdateText() + System.lineSeparator());
+                        bos.flush();
+                    } catch (IOException ex) {
+                        Logger.getLogger(Visualize.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+
+                /**
+                 * ENIE VIZ!
+                 * 
+                 * TODO: rename file to apf.xml
+                 */
+                dest = new File(data.getEnieOut());
+                if (dest.exists()) {
+                    try {
+                        try {
+                            FileUtils.copyDirectory(source, dest);
+                        } catch (IOException e) {
+                            Logger.getLogger(Visualize.class.getName()).log(Level.SEVERE, null, e);
+                        }
+                        
+                        File dir = new File(data.getEnieOut());
+                        File[] listFiles = dir.listFiles();
+                        ArrayList<File> toDelete = new ArrayList<>();
+                        for(File f : listFiles) {
+                            if(f.getName().endsWith(".xml")) {
+                                String fileName = f.getAbsolutePath().replace(".xml", ".apf.xml");
+                                File dest2 = new File(fileName);
+                                FileUtils.copyFile(f, dest2);
+                                toDelete.add(dest2);
+                            }
+                        }
+
+                        ProcessBuilder pb = new ProcessBuilder("python3", "ere_visualizer.py", file_list, data.getEnieOut(), data.getEnieOut());
+                        for (String cmd : pb.command()) {
+                            Logger.getLogger(Visualize.class.getName()).log(Level.WARNING, cmd);
+                        }
+//        Map<String, String> environment = pb.environment();
+                        pb.directory(new File(viz_path));
+                        pb.redirectErrorStream(true);
+                        Process proc = pb.start();
+                        StreamGobbler sg = new StreamGobbler(proc.getInputStream());
+                        sg.start();
+//                    ExternalProcess ex_proc = new ExternalProcess(sg, proc);
+//                    data.setProc(ex_proc);
+                        try {
+                            proc.waitFor();
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(JointEre.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        for(File f : toDelete) {
+                            f.delete();
+                        }
+                        bos.write("ENIE VIZ" + System.lineSeparator());
+                        bos.write(sg.getUpdateText() + System.lineSeparator());
+                        bos.flush();
+                    } catch (IOException ex) {
+                        Logger.getLogger(Visualize.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+
+                /**
+                 * JOINT ERE VIZ!
+                 */
+                dest = new File(data.getJointEreOut());
+                if (dest.exists()) {
+                    try {
+                        try {
+                            FileUtils.copyDirectory(source, dest);
+                        } catch (IOException e) {
+                            Logger.getLogger(Visualize.class.getName()).log(Level.SEVERE, null, e);
+                        }
+                        ProcessBuilder pb = new ProcessBuilder("python3", "ere_visualizer.py", file_list, data.getJointEreOut(), data.getJointEreOut());
+                        for (String cmd : pb.command()) {
+                            Logger.getLogger(Visualize.class.getName()).log(Level.WARNING, cmd);
+                        }
+//        Map<String, String> environment = pb.environment();
+                        pb.directory(new File(viz_path));
+                        pb.redirectErrorStream(true);
+                        Process proc = pb.start();
+                        StreamGobbler sg = new StreamGobbler(proc.getInputStream());
+                        sg.start();
+//                    ExternalProcess ex_proc = new ExternalProcess(sg, proc);
+//                    data.setProc(ex_proc);
+                        try {
+                            proc.waitFor();
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(JointEre.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        bos.write("JOINT ERE VIZ" + System.lineSeparator());
+                        bos.write(sg.getUpdateText() + System.lineSeparator());
+                        bos.flush();
+                    } catch (IOException ex) {
+                        Logger.getLogger(Visualize.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        });
+        t.start();
+        ExternalProcess ex_proc = new ExternalProcess(sg, t);
+        data.setProc(ex_proc);
+
+//        Part part = request.getPart("step");
+//        String target = IOUtils.toString(part.getInputStream(), "UTF-8");
         // displays done.jsp page after upload finished
-        getServletContext().getRequestDispatcher(target).forward(
+        getServletContext().getRequestDispatcher("/watchProcess.jsp").forward(
                 request, response);
     }
 

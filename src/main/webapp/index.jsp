@@ -17,20 +17,28 @@
             }
             function onload() {
                 console.log("pipeline_id: " + guid());
-                document.getElementById("pipeline_id").value = guid();    
+                document.getElementById("pipeline_id").value = guid();
             }
         </script>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     </head>
     <body onload="onload()">
-        <h1>Green Pipeline Web</h1>
+        <h1>Green Pipeline Run View</h1>
         Web app for processing through the green pipeline involving joint_ere_release and ENIE.
-        <hr />
-        <form method="post" action="UploadServlet" enctype="multipart/form-data">
-            <input type="hidden" name="step" id="step" value="/hub.jsp" />
-            Select SGM file to upload:
-            <input type="hidden" name="pipeline_id" id="pipeline_id"/>
-            <input type="file" name="dataFile" id="fileChooser"/><br/><br/>
-            <input type="submit" value="Upload" />
-        </form>
+        <div>
+            <h2>View Data</h2>
+            <a href="viewAll.jsp">View Run Data</a>
+        </div>
+        <div>
+            <h2>Run Data</h2>
+            <hr />
+            <form method="post" action="UploadServlet" enctype="multipart/form-data">
+                <input type="hidden" name="step" id="step" value="/hub.jsp" />
+                Select SGM file to upload:
+                <input type="hidden" name="pipeline_id" id="pipeline_id"/>
+                <input type="file" name="dataFile" id="fileChooser"/><br/><br/>
+                <input type="submit" value="Upload" />
+            </form>
+        </div>
     </body>
 </html>

@@ -3,11 +3,8 @@
  */
 package com.artistech.ee.web;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -42,8 +39,8 @@ public class Merge extends HttpServlet {
         Data data = DataManager.getData(pipeline_id);
         String input_sgm = data.getInput();
         String file_list = data.getTestList();
-        String merge_out = data.getPipelineDir() + File.separator + "merge_out";
-        data.setMergeOut(merge_out);
+        String merge_out = data.getMergeOut();
+//        data.setMergeOut(merge_out);
         File output_dir = new File(merge_out);
         output_dir.mkdirs();
         //java -Xmx8G -cp ere-11-08-2016_small.jar:lib/\* edu.rpi.jie.ere.joint.Tagger /work/Documents/FOUO/EntityExtraction/joint_ere/models/joint/joint_model /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/input/ /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/test.list /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/joint_ere_out/
@@ -58,18 +55,20 @@ public class Merge extends HttpServlet {
         pb.directory(new File(joint_ere_path));
         pb.redirectErrorStream(true);
         Process proc = pb.start();
-        StreamGobbler sg = new StreamGobbler(proc.getInputStream(), "");
+        StreamGobbler sg = new StreamGobbler(proc.getInputStream());
         sg.start();
-        try {
-            proc.waitFor();
-        } catch (InterruptedException ex) {
-            Logger.getLogger(JointEre.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        Part part = request.getPart("step");
-        String target = IOUtils.toString(part.getInputStream(), "UTF-8");
+        ExternalProcess ex_proc = new ExternalProcess(sg, proc);
+        data.setProc(ex_proc);
+//        try {
+//            proc.waitFor();
+//        } catch (InterruptedException ex) {
+//            Logger.getLogger(JointEre.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        Part part = request.getPart("step");
+//        String target = IOUtils.toString(part.getInputStream(), "UTF-8");
 
         // displays done.jsp page after upload finished
-        getServletContext().getRequestDispatcher(target).forward(
+        getServletContext().getRequestDispatcher("/watchProcess.jsp").forward(
                 request, response);
     }
 

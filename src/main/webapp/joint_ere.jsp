@@ -13,8 +13,9 @@
         <title>Joint ERE Release</title>
         <link rel='stylesheet' href='style.css' type='text/css'>
         <script type='text/javascript'>
-            var algolink_id = "<c:out value="${dataBean.pipeline_id}" />";
+            var pipeline_id = "<c:out value="${dataBean.pipeline_id}" />";
         </script>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     </head>
     <body>
         <h1>Joint ERE Release</h1>
