@@ -40,7 +40,7 @@ public class Merge extends HttpServlet {
 
         Part pipeline_id_part = request.getPart("pipeline_id");
         String pipeline_id = IOUtils.toString(pipeline_id_part.getInputStream(), "UTF-8");
-        Data data = DataManager.getData(pipeline_id);
+        Data data = (Data) DataManager.getData(pipeline_id);
         String input_sgm = data.getInput();
         String file_list = data.getTestList();
         String merge_out = data.getMergeOut();

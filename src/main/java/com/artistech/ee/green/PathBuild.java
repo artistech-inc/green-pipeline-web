@@ -1,11 +1,12 @@
 /*
  * Copyright 2017 ArtisTech, Inc.
  */
-package com.artistech.ee.web;
+package com.artistech.ee.green;
 
+import com.artistech.ee.beans.Data;
 import com.artistech.ee.beans.DataManager;
 import com.artistech.ee.beans.PipelineBean;
-import com.artistech.ee.beans.Data;
+import com.artistech.ee.beans.DataBase;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -77,7 +78,9 @@ public class PathBuild extends HttpServlet {
         String pipeline_id = IOUtils.toString(part.getInputStream(), "UTF-8");
         DataManager dataManagerBean = new DataManager();
         dataManagerBean.setPipeline_id(pipeline_id);
-        Data data = DataManager.getData(pipeline_id);
+
+        //HACK: 1/2 UNIQUE THING HERE
+        Data data = (Data) DataManager.getData(pipeline_id);
         if (data == null) {
             data = new Data(pipeline_id);
         }
@@ -90,7 +93,7 @@ public class PathBuild extends HttpServlet {
         String stepName = IOUtils.toString(part.getInputStream(), "UTF-8");
         PipelineBean pb = new PipelineBean();
         PipelineBean.Part create = pb.createPart(stepName);
-        PipelineBean.Parameter[] parameters = create.getParameters();
+//        PipelineBean.Parameter[] parameters = create.getParameters();
 
         for (PipelineBean.Parameter p : create.getParameters()) {
             part = request.getPart(stepName + "__" + p.getName());
@@ -117,6 +120,7 @@ public class PathBuild extends HttpServlet {
                         dir.mkdirs();
                     }
 
+                    //HACK: 2/2 UNIQUE THING HERE
                     try (java.io.BufferedWriter writer = new BufferedWriter(new FileWriter(new File(data.getTestList())))) {
                         writer.write(part.getSubmittedFileName() + System.getProperty("line.separator"));
                     }

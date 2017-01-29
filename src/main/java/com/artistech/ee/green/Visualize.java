@@ -45,7 +45,7 @@ public class Visualize extends HttpServlet {
 
         Part pipeline_id_part = request.getPart("pipeline_id");
         String pipeline_id = IOUtils.toString(pipeline_id_part.getInputStream(), "UTF-8");
-        final Data data = DataManager.getData(pipeline_id);
+        final Data data = (Data) DataManager.getData(pipeline_id);
 
         PipedInputStream in = new PipedInputStream();
         final PipedOutputStream out = new PipedOutputStream(in);
