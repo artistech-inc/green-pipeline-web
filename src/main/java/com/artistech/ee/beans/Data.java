@@ -3,12 +3,10 @@
  */
 package com.artistech.ee.beans;
 
-import com.artistech.utils.ExternalProcess;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,9 +20,7 @@ public class Data extends DataBase {
     public static final String JOINT_ERE_DIR = "joint_ere_out";
     public static final String MERGE_DIR = "merge_out";
     public static final String VISUALIZATION_DIR = "viz_out";
-    public static final String TEST_LIST = "test_list";
-
-    private ExternalProcess proc;
+    private static final String TEST_LIST = "test_list";
 
     public Data(String key) {
         super(key);
@@ -38,9 +34,6 @@ public class Data extends DataBase {
         return getPipelineDir() + File.separator + JOINT_ERE_DIR;
     }
 
-//    public void setJointEreOut(String value) {
-////        map.put("joint_ere_out", value);
-//    }
     public String[] getJointEreOutFiles() {
         File f = new File(getJointEreOut());
         if (f.exists()) {
@@ -53,9 +46,6 @@ public class Data extends DataBase {
         return getPipelineDir() + File.separator + ENIE_DIR;
     }
 
-//    public void setEnieOut(String value) {
-////        map.put("enie_out", value);
-//    }
     public String[] getEnieOutFiles() {
         File f = new File(getEnieOut());
         if (f.exists()) {
@@ -67,10 +57,6 @@ public class Data extends DataBase {
     public String getMergeOut() {
         return getPipelineDir() + File.separator + MERGE_DIR;
     }
-//
-//    public void setMergeOut(String value) {
-////        map.put("merge_out", value);
-//    }
 
     public String[] getMergedFiles() {
         File f = new File(getMergeOut());
@@ -84,9 +70,6 @@ public class Data extends DataBase {
         return getPipelineDir() + File.separator + VISUALIZATION_DIR;
     }
 
-//    public void setVizOut(String value) {
-////        map.put("viz_out", value);
-//    }
     public String[] getVizFiles() {
         File f = new File(getVizOut());
         if (f.exists()) {
@@ -98,7 +81,6 @@ public class Data extends DataBase {
     @Override
     public String[] getKeys() {
         ArrayList<String> keys = new ArrayList<>();
-        keys.addAll(Arrays.asList(super.getKeys()));
 
         Field[] fields = Data.class.getFields();
         for (Field f : fields) {

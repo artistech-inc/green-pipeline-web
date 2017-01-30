@@ -7,7 +7,9 @@ import com.artistech.ee.beans.Data;
 import com.artistech.ee.beans.DataManager;
 import com.artistech.utils.ExternalProcess;
 import com.artistech.utils.StreamGobbler;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -42,6 +44,16 @@ public class ENIE extends HttpServlet {
         Data data = (Data) DataManager.getData(pipeline_id);
         String input_sgm = data.getInput();
         String file_list = data.getTestList();
+
+        File test_file = new File(file_list);
+        if (!test_file.exists()) {
+            for (String f : data.getInputFiles()) {
+                try (java.io.BufferedWriter writer = new BufferedWriter(new FileWriter(test_file))) {
+                    writer.write(f + System.lineSeparator());
+                }
+            }
+        }
+
         String enie_out = data.getEnieOut();
         File output_dir = new File(enie_out);
         output_dir.mkdirs();

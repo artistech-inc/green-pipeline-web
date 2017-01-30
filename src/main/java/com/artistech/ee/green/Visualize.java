@@ -7,7 +7,9 @@ import com.artistech.ee.beans.DataManager;
 import com.artistech.ee.beans.Data;
 import com.artistech.utils.ExternalProcess;
 import com.artistech.utils.StreamGobbler;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PipedInputStream;
@@ -45,7 +47,17 @@ public class Visualize extends HttpServlet {
         Part pipeline_id_part = request.getPart("pipeline_id");
         String pipeline_id = IOUtils.toString(pipeline_id_part.getInputStream(), "UTF-8");
         final Data data = (Data) DataManager.getData(pipeline_id);
+        final String file_list = data.getTestList();
 
+        File test_file = new File(file_list);
+        if (!test_file.exists()) {
+            for (String f : data.getInputFiles()) {
+                try (java.io.BufferedWriter writer = new BufferedWriter(new FileWriter(test_file))) {
+                    writer.write(f + System.lineSeparator());
+                }
+            }
+        }
+        
         PipedInputStream in = new PipedInputStream();
         final PipedOutputStream out = new PipedOutputStream(in);
         StreamGobbler sg = new StreamGobbler(in);
@@ -57,7 +69,6 @@ public class Visualize extends HttpServlet {
             public void run() {
                 File source = new File(data.getInput());
                 File dest = new File(data.getMergeOut());
-                String file_list = data.getTestList();
                 String merge_out = data.getMergeOut();
 
                 String viz_out = data.getVizOut();
