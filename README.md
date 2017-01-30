@@ -16,20 +16,20 @@ This is a web-app which will utilize various 3rd party apps/scripts for extracti
 ## Downloading
 
 ```sh
-git clone https://github.com/artistech-inc/green-pipeline-web.git
+git clone https://github.com/artistech-inc/green-pipeline.git
 git checkout v1.2
 ```
 
 ## Configuration
 
-Update the [WEB-INF/web.xml](https://github.com/artistech-inc/green-pipeline-web/blob/master/src/main/webapp/WEB-INF/web.xml) file. Each Servlet that utilizes an external application/script/process must have the path to the application set. For now, this includes:
+Update the [WEB-INF/web.xml](https://github.com/artistech-inc/green-pipeline/blob/master/src/main/webapp/WEB-INF/web.xml) file. Each Servlet that utilizes an external application/script/process must have the path to the application set. For now, this includes:
 
 - joint_ere
 - ENIE
 - Merge Tool
 - Visualization Generation
 
-Along with the web.xml file, the [META-INF/context.xml](https://github.com/artistech-inc/green-pipeline-web/blob/master/src/main/webapp/META-INF/context.xml) must be configured. The `data_path` value must be somewhere that Tomcat can write to.
+Along with the web.xml file, the [META-INF/context.xml](https://github.com/artistech-inc/green-pipeline/blob/master/src/main/webapp/META-INF/context.xml) must be configured. The `data_path` value must be somewhere that Tomcat can write to.
 
 ## Compilation
 
