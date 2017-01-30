@@ -7,7 +7,9 @@ import com.artistech.ee.beans.Data;
 import com.artistech.ee.beans.DataManager;
 import com.artistech.utils.ExternalProcess;
 import com.artistech.utils.StreamGobbler;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -39,11 +41,20 @@ public class ENIE extends HttpServlet {
 
         Part pipeline_id_part = request.getPart("pipeline_id");
         String pipeline_id = IOUtils.toString(pipeline_id_part.getInputStream(), "UTF-8");
-        Data data = DataManager.getData(pipeline_id);
+        Data data = (Data) DataManager.getData(pipeline_id);
         String input_sgm = data.getInput();
         String file_list = data.getTestList();
+
+        File test_file = new File(file_list);
+        if (!test_file.exists()) {
+            for (String f : data.getInputFiles()) {
+                try (java.io.BufferedWriter writer = new BufferedWriter(new FileWriter(test_file))) {
+                    writer.write(f + System.lineSeparator());
+                }
+            }
+        }
+
         String enie_out = data.getEnieOut();
-//        data.setEnieOut(enie_out);
         File output_dir = new File(enie_out);
         output_dir.mkdirs();
 
@@ -57,14 +68,6 @@ public class ENIE extends HttpServlet {
         sg.start();
         ExternalProcess ex_proc = new ExternalProcess(sg, proc);
         data.setProc(ex_proc);
-        data.setPipelineIndex(data.getPipelineIndex() + 1);
-//        try {
-//            proc.waitFor();
-//        } catch (InterruptedException ex) {
-//            Logger.getLogger(JointEre.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        Part part = request.getPart("step");
-//        String target = IOUtils.toString(part.getInputStream(), "UTF-8");
 
         // displays done.jsp page after upload finished
         getServletContext().getRequestDispatcher("/watchProcess.jsp").forward(
