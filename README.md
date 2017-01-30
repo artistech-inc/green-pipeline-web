@@ -15,7 +15,10 @@ This is a web-app which will utilize various 3rd party apps/scripts for extracti
 
 ## Downloading
 
-`git clone https://github.com/artistech-inc/green-pipeline-web.git`
+```sh
+git clone https://github.com/artistech-inc/green-pipeline-web.git
+git checkout v1.2
+```
 
 ## Configuration
 
@@ -35,7 +38,13 @@ This project should be able opened using Netbeans as a Maven Web-App. It will au
 The project can also be compiled on the command line directly using maven.
 
 ```sh
+git clone https://github.com/artistech-inc/pipeline-base.git
+cd pipeline-base
+mvn clean install
+cd ..
+git clone https://github.com/artistech-inc/green-pipeline-web.git
 cd green-pipeline-web
+git clone v1.2
 mvn clean package
 ```
 
