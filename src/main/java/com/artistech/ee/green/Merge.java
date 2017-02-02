@@ -21,6 +21,7 @@ import javax.servlet.http.Part;
 import org.apache.commons.io.IOUtils;
 
 /**
+ * Handle running the merge script.
  *
  * @author matta
  */
@@ -58,10 +59,7 @@ public class Merge extends HttpServlet {
         String merge_out = data.getMergeOut();
         File output_dir = new File(merge_out);
         output_dir.mkdirs();
-        //java -Xmx8G -cp ere-11-08-2016_small.jar:lib/\* edu.rpi.jie.ere.joint.Tagger /work/Documents/FOUO/EntityExtraction/joint_ere/models/joint/joint_model /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/input/ /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/test.list /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/joint_ere_out/
 
-        //TODO: need to know "$INPUT_SGM", "$FILE_LIST", "$JERE_OUTP"
-        //java -Xmx8G -cp $MERG_CPTH arl.workflow.combine.MergeEnieEre $FILE_LIST $INPUT_SGM "" $ENIE_OUTP $JERE_OUTP .xml .apf.xml $MERG_OUTP
         ProcessBuilder pb = new ProcessBuilder("java", "-Xmx8G", "-cp", classpath, "arl.workflow.combine.MergeEnieEre", file_list, input_sgm, "", data.getEnieOut(), data.getJointEreOut(), ".xml", ".apf.xml", merge_out);
         for(String cmd : pb.command()) {
             Logger.getLogger(Merge.class.getName()).log(Level.WARNING, cmd);
@@ -114,7 +112,7 @@ public class Merge extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Run merge";
     }// </editor-fold>
 
 }

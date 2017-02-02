@@ -21,6 +21,7 @@ import javax.servlet.http.Part;
 import org.apache.commons.io.IOUtils;
 
 /**
+ * Handle running the ENIE process.
  *
  * @author matta
  */
@@ -38,7 +39,6 @@ public class ENIE extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String enie_path = getInitParameter("path");
-//        String enie_props = enie_path + getInitParameter("property");
         String classpath = getInitParameter("classpath");
 
         Part pipeline_id_part = request.getPart("pipeline_id");
@@ -56,7 +56,7 @@ public class ENIE extends HttpServlet {
             }
         }
         
-        ArrayList<PipelineBean.Part> currentParts = data.getCurrentParts();
+        ArrayList<PipelineBean.Part> currentParts = data.getPipelineParts();
         PipelineBean.Part get = currentParts.get(data.getPipelineIndex());
         PipelineBean.Parameter parameter = get.getParameter("property");
         String enie_props = parameter.getValue();
@@ -117,7 +117,7 @@ public class ENIE extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Run ENIE";
     }// </editor-fold>
 
 }

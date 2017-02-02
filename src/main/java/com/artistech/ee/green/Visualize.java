@@ -26,6 +26,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 /**
+ * Handle generating the viz output.
  *
  * @author matta
  */
@@ -113,7 +114,7 @@ public class Visualize extends HttpServlet {
 
                 /**
                  * ENIE VIZ!
-                 * 
+                 *
                  * TODO: rename file to apf.xml
                  */
                 dest = new File(data.getEnieOut());
@@ -124,12 +125,12 @@ public class Visualize extends HttpServlet {
                         } catch (IOException e) {
                             Logger.getLogger(Visualize.class.getName()).log(Level.SEVERE, null, e);
                         }
-                        
+
                         File dir = new File(data.getEnieOut());
                         File[] listFiles = dir.listFiles();
                         ArrayList<File> toDelete = new ArrayList<>();
-                        for(File f : listFiles) {
-                            if(f.getName().endsWith(".xml")) {
+                        for (File f : listFiles) {
+                            if (f.getName().endsWith(".xml")) {
                                 String fileName = f.getAbsolutePath().replace(".xml", ".apf.xml");
                                 File dest2 = new File(fileName);
                                 FileUtils.copyFile(f, dest2);
@@ -153,7 +154,7 @@ public class Visualize extends HttpServlet {
                         } catch (InterruptedException ex) {
                             Logger.getLogger(JointEre.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                        for(File f : toDelete) {
+                        for (File f : toDelete) {
                             f.delete();
                         }
                         bos.write("ENIE VIZ" + System.lineSeparator());
@@ -245,7 +246,7 @@ public class Visualize extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Run Visualization";
     }// </editor-fold>
 
 }
