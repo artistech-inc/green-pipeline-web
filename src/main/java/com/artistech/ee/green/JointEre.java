@@ -5,12 +5,14 @@ package com.artistech.ee.green;
 
 import com.artistech.ee.beans.DataManager;
 import com.artistech.ee.beans.Data;
+import com.artistech.ee.beans.PipelineBean;
 import com.artistech.utils.ExternalProcess;
 import com.artistech.utils.StreamGobbler;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -38,7 +40,7 @@ public class JointEre extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String joint_ere_path = getInitParameter("path");
-        String joint_ere_model = joint_ere_path + getInitParameter("model");
+//        String joint_ere_model = joint_ere_path + getInitParameter("model");
         String classpath = getInitParameter("classpath");
 
         Part pipeline_id_part = request.getPart("pipeline_id");
@@ -55,6 +57,10 @@ public class JointEre extends HttpServlet {
                 }
             }
         }
+        ArrayList<PipelineBean.Part> currentParts = data.getCurrentParts();
+        PipelineBean.Part get = currentParts.get(data.getPipelineIndex());
+        PipelineBean.Parameter parameter = get.getParameter("model");
+        String joint_ere_model = parameter.getValue();
 
         String joint_ere_out = data.getJointEreOut();
         File output_dir = new File(joint_ere_out);

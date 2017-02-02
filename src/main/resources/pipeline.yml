@@ -17,13 +17,25 @@ parts:
         requires:
             - input
         page: JointEre
-        parameters: []
+        parameters:
+            - parameter:
+                name: model
+                value: models/joint/joint_model
+                values:
+                    - models/joint/joint_model
+                type: select
     enie:
         output-dir: enie_out
         requires:
             - input
         page: ENIE
-        parameters: []
+        parameters:
+            - parameter:
+                name: property
+                value: props/enie.property
+                values:
+                    - props/enie.property
+                type: select
     merge:
         output-dir: merge_out
         requires:
