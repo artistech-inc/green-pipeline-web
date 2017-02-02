@@ -112,7 +112,7 @@ public class Merge extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Run merge";
+        return "Run merge Step";
     }// </editor-fold>
 
 }

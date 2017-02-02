@@ -117,7 +117,7 @@ public class ENIE extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Run ENIE";
+        return "Run ENIE Step";
     }// </editor-fold>
 
 }

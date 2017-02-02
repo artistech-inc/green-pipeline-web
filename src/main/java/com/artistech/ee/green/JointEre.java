@@ -116,7 +116,7 @@ public class JointEre extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Run  Joine ERE";
+        return "Run  Joine ERE Step";
     }// </editor-fold>
 
 }

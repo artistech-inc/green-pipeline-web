@@ -246,7 +246,7 @@ public class Visualize extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Run Visualization";
+        return "Run Visualization Step";
     }// </editor-fold>
 
 }
