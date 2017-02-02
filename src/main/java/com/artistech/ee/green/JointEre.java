@@ -13,8 +13,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -40,7 +38,6 @@ public class JointEre extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String joint_ere_path = getInitParameter("path");
-//        String joint_ere_model = joint_ere_path + getInitParameter("model");
         String classpath = getInitParameter("classpath");
 
         Part pipeline_id_part = request.getPart("pipeline_id");
