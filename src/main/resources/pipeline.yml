@@ -5,7 +5,7 @@ data-object: com.artistech.ee.beans.Data
 parts:
     input:
         requires: []
-        page: pipeline.jsp
+        page: InputFile
         output-dir: input
         parameters:
             - parameter:
