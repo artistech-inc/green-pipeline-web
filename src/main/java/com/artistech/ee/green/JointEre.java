@@ -10,8 +10,10 @@ import com.artistech.utils.ExternalProcess;
 import com.artistech.utils.StreamGobbler;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -59,18 +61,27 @@ public class JointEre extends HttpServlet {
         PipelineBean.Part get = currentParts.get(data.getPipelineIndex());
         PipelineBean.Parameter parameter = get.getParameter("model");
         String joint_ere_model = parameter.getValue();
+        parameter = get.getParameter("tagger");
+        String tagger = parameter.getValue();
 
         String joint_ere_out = data.getJointEreOut();
         File output_dir = new File(joint_ere_out);
         output_dir.mkdirs();
-        //java -Xmx8G -cp ere-11-08-2016_small.jar:lib/\* edu.rpi.jie.ere.joint.Tagger /work/Documents/FOUO/EntityExtraction/joint_ere/models/joint/joint_model /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/input/ /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/test.list /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/joint_ere_out/
 
-        //TODO: need to know "$INPUT_SGM", "$FILE_LIST", "$JERE_OUTP"
-        ProcessBuilder pb = new ProcessBuilder("java", "-Xmx8G", "-cp", classpath, "edu.rpi.jie.ere.joint.Tagger", joint_ere_model, input_sgm, file_list, joint_ere_out);
+        ProcessBuilder pb = new ProcessBuilder("java", "-Xmx8G", "-cp", classpath, tagger, joint_ere_model, input_sgm, file_list, joint_ere_out);
         pb.directory(new File(joint_ere_path));
         pb.redirectErrorStream(true);
         Process proc = pb.start();
-        StreamGobbler sg = new StreamGobbler(proc.getInputStream());
+
+        //enable writing to console log
+        OutputStream os = new FileOutputStream(new File(data.getConsoleFile()), true);
+        StreamGobbler sg = new StreamGobbler(proc.getInputStream(), os);
+        sg.write("Joint ERE");
+        StringBuilder sb = new StringBuilder();
+        for (String cmd : pb.command()) {
+            sb.append(cmd).append(" ");
+        }
+        sg.write(sb.toString().trim());
         sg.start();
         ExternalProcess ex_proc = new ExternalProcess(sg, proc);
         data.setProc(ex_proc);

@@ -10,8 +10,10 @@ import com.artistech.utils.ExternalProcess;
 import com.artistech.utils.StreamGobbler;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -55,23 +57,33 @@ public class ENIE extends HttpServlet {
                 }
             }
         }
-        
+
         ArrayList<PipelineBean.Part> currentParts = data.getPipelineParts();
         PipelineBean.Part get = currentParts.get(data.getPipelineIndex());
         PipelineBean.Parameter parameter = get.getParameter("property");
         String enie_props = parameter.getValue();
+        parameter = get.getParameter("tagger");
+        String tagger = parameter.getValue();
 
         String enie_out = data.getEnieOut();
         File output_dir = new File(enie_out);
         output_dir.mkdirs();
 
-        //TODO: need to know "$FILE_LIST", "$INPUT_SGM", "$ENIE_OUTP"
-        ProcessBuilder pb = new ProcessBuilder("java", "-cp", classpath, "-Xmx8g", "-Xms8g", "-server", "-DjetHome=./", "cuny.blender.englishie.ace.IETagger", enie_props, file_list, input_sgm, enie_out);
+        ProcessBuilder pb = new ProcessBuilder("java", "-cp", classpath, "-Xmx8g", "-Xms8g", "-server", "-DjetHome=./", tagger, enie_props, file_list, input_sgm, enie_out);
         pb.directory(new File(enie_path));
         //catch output...
         pb.redirectErrorStream(true);
         Process proc = pb.start();
-        StreamGobbler sg = new StreamGobbler(proc.getInputStream());
+
+        //enable writing to console log
+        OutputStream os = new FileOutputStream(new File(data.getConsoleFile()), true);
+        StreamGobbler sg = new StreamGobbler(proc.getInputStream(), os);
+        sg.write("ENIE");
+        StringBuilder sb = new StringBuilder();
+        for (String cmd : pb.command()) {
+            sb.append(cmd).append(" ");
+        }
+        sg.write(sb.toString().trim());
         sg.start();
         ExternalProcess ex_proc = new ExternalProcess(sg, proc);
         data.setProc(ex_proc);

@@ -9,8 +9,10 @@ import com.artistech.utils.ExternalProcess;
 import com.artistech.utils.StreamGobbler;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
@@ -61,7 +63,7 @@ public class Visualize extends HttpServlet {
 
         PipedInputStream in = new PipedInputStream();
         final PipedOutputStream out = new PipedOutputStream(in);
-        StreamGobbler sg = new StreamGobbler(in);
+        StreamGobbler sg = new StreamGobbler(in, null);
         sg.start();
 
         final OutputStreamWriter bos = new OutputStreamWriter(out);
@@ -96,7 +98,16 @@ public class Visualize extends HttpServlet {
                         pb.directory(new File(viz_path));
                         pb.redirectErrorStream(true);
                         Process proc = pb.start();
-                        StreamGobbler sg = new StreamGobbler(proc.getInputStream());
+
+                        //enable writing to console log
+                        OutputStream os = new FileOutputStream(new File(data.getConsoleFile()), true);
+                        StreamGobbler sg = new StreamGobbler(proc.getInputStream(), os);
+                        sg.write("MERGE VIZ");
+                        StringBuilder sb = new StringBuilder();
+                        for(String cmd : pb.command()) {
+                            sb.append(cmd).append(" ");
+                        }
+                        sg.write(sb.toString().trim());
                         sg.start();
 
                         try {
@@ -104,7 +115,7 @@ public class Visualize extends HttpServlet {
                         } catch (InterruptedException ex) {
                             Logger.getLogger(JointEre.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                        bos.write("MERGE VIZ" + System.lineSeparator());
+//                        bos.write("MERGE VIZ" + System.lineSeparator());
                         bos.write(sg.getUpdateText() + System.lineSeparator());
                         bos.flush();
                     } catch (IOException ex) {
@@ -146,7 +157,16 @@ public class Visualize extends HttpServlet {
                         pb.directory(new File(viz_path));
                         pb.redirectErrorStream(true);
                         Process proc = pb.start();
-                        StreamGobbler sg = new StreamGobbler(proc.getInputStream());
+
+                        //enable writing to console log
+                        OutputStream os = new FileOutputStream(new File(data.getConsoleFile()), true);
+                        StreamGobbler sg = new StreamGobbler(proc.getInputStream(), os);
+                        sg.write("ENIE VIZ");
+                        StringBuilder sb = new StringBuilder();
+                        for(String cmd : pb.command()) {
+                            sb.append(cmd).append(" ");
+                        }
+                        sg.write(sb.toString().trim());
                         sg.start();
 
                         try {
@@ -157,7 +177,7 @@ public class Visualize extends HttpServlet {
                         for (File f : toDelete) {
                             f.delete();
                         }
-                        bos.write("ENIE VIZ" + System.lineSeparator());
+//                        bos.write("ENIE VIZ" + System.lineSeparator());
                         bos.write(sg.getUpdateText() + System.lineSeparator());
                         bos.flush();
                     } catch (IOException ex) {
@@ -184,7 +204,16 @@ public class Visualize extends HttpServlet {
                         pb.directory(new File(viz_path));
                         pb.redirectErrorStream(true);
                         Process proc = pb.start();
-                        StreamGobbler sg = new StreamGobbler(proc.getInputStream());
+
+                        //enable writing to console log
+                        OutputStream os = new FileOutputStream(new File(data.getConsoleFile()), true);
+                        StreamGobbler sg = new StreamGobbler(proc.getInputStream(), os);
+                        sg.write("JOINT ERE VIZ");
+                        StringBuilder sb = new StringBuilder();
+                        for(String cmd : pb.command()) {
+                            sb.append(cmd).append(" ");
+                        }
+                        sg.write(sb.toString().trim());
                         sg.start();
 
                         try {
@@ -192,7 +221,7 @@ public class Visualize extends HttpServlet {
                         } catch (InterruptedException ex) {
                             Logger.getLogger(JointEre.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                        bos.write("JOINT ERE VIZ" + System.lineSeparator());
+//                        bos.write("JOINT ERE VIZ" + System.lineSeparator());
                         bos.write(sg.getUpdateText() + System.lineSeparator());
                         bos.flush();
                     } catch (IOException ex) {

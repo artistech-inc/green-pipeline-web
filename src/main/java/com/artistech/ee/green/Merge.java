@@ -5,12 +5,16 @@ package com.artistech.ee.green;
 
 import com.artistech.ee.beans.DataManager;
 import com.artistech.ee.beans.Data;
+import com.artistech.ee.beans.PipelineBean;
 import com.artistech.utils.ExternalProcess;
 import com.artistech.utils.StreamGobbler;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -55,19 +59,32 @@ public class Merge extends HttpServlet {
                 }
             }
         }
+        ArrayList<PipelineBean.Part> currentParts = data.getPipelineParts();
+        PipelineBean.Part get = currentParts.get(data.getPipelineIndex());
+        PipelineBean.Parameter parameter = get.getParameter("combiner");
+        String combiner = parameter.getValue();
 
         String merge_out = data.getMergeOut();
         File output_dir = new File(merge_out);
         output_dir.mkdirs();
 
-        ProcessBuilder pb = new ProcessBuilder("java", "-Xmx8G", "-cp", classpath, "arl.workflow.combine.MergeEnieEre", file_list, input_sgm, "", data.getEnieOut(), data.getJointEreOut(), ".xml", ".apf.xml", merge_out);
+        ProcessBuilder pb = new ProcessBuilder("java", "-Xmx8G", "-cp", classpath, combiner, file_list, input_sgm, "", data.getEnieOut(), data.getJointEreOut(), ".xml", ".apf.xml", merge_out);
         for(String cmd : pb.command()) {
             Logger.getLogger(Merge.class.getName()).log(Level.WARNING, cmd);
         }
         pb.directory(new File(joint_ere_path));
         pb.redirectErrorStream(true);
         Process proc = pb.start();
-        StreamGobbler sg = new StreamGobbler(proc.getInputStream());
+
+        //enable writing to console log
+        OutputStream os = new FileOutputStream(new File(data.getConsoleFile()), true);
+        StreamGobbler sg = new StreamGobbler(proc.getInputStream(), os);
+        sg.write("MERGE");
+        StringBuilder sb = new StringBuilder();
+        for(String cmd : pb.command()) {
+            sb.append(cmd).append(" ");
+        }
+        sg.write(sb.toString().trim());
         sg.start();
         ExternalProcess ex_proc = new ExternalProcess(sg, proc);
         data.setProc(ex_proc);
