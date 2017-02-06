@@ -42,12 +42,12 @@ The project can also be compiled on the command line directly using maven.
 ```sh
 git clone https://github.com/artistech-inc/pipeline-base.git
 cd pipeline-base
-git clone v1.3
+git checkout v1.3
 mvn clean install
 cd ..
 git clone https://github.com/artistech-inc/green-pipeline-web.git
 cd green-pipeline-web
-git clone v1.3
+git checkout v1.3
 mvn clean package
 ```
 
