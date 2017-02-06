@@ -22,14 +22,15 @@ git checkout v1.2
 
 ## Configuration
 
-Update the [WEB-INF/web.xml](https://github.com/artistech-inc/green-pipeline/blob/master/src/main/webapp/WEB-INF/web.xml) file. Each Servlet that utilizes an external application/script/process must have the path to the application set. For now, this includes:
+As of
+Update the [pipeline.yml](https://github.com/artistech-inc/green-pipeline-web/blob/v1.3/src/main/resources/pipeline.yml) file.  Each component must have the proper path value set.  This is the location where the external process will execute from.
 
 - joint_ere
 - ENIE
 - Merge Tool
 - Visualization Generation
 
-Along with the web.xml file, the [META-INF/context.xml](https://github.com/artistech-inc/green-pipeline/blob/master/src/main/webapp/META-INF/context.xml) must be configured. The `data_path` value must be somewhere that Tomcat can write to.
+The `data-path` value must be somewhere that Tomcat can write to.
 
 ## Compilation
 
@@ -50,7 +51,7 @@ mvn clean package
 
 ## Deployment
 
-The output from compilation is in the `target/` directory as `green-pipeline-web-1.2.war`. This war can be deployed to Tomcat's `webapps` directory. Once deployed, it can be accessed via `http://<ip_address:port>/green-pipeline-web-1.2/`.
+The output from compilation is in the `target/` directory as `green-pipeline-web-1.3.war`. This war can be deployed to Tomcat's `webapps` directory. Once deployed, it can be accessed via `http://<ip_address:port>/green-pipeline-web-1.3/`.
 
 ## Bugs
 
