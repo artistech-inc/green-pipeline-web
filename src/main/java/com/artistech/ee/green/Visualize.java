@@ -5,6 +5,7 @@ package com.artistech.ee.green;
 
 import com.artistech.ee.beans.DataManager;
 import com.artistech.ee.beans.Data;
+import com.artistech.ee.beans.PipelineBean;
 import com.artistech.utils.ExternalProcess;
 import com.artistech.utils.StreamGobbler;
 import java.io.BufferedWriter;
@@ -45,8 +46,6 @@ public class Visualize extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        final String viz_path = getInitParameter("path");
-
         Part pipeline_id_part = request.getPart("pipeline_id");
         String pipeline_id = IOUtils.toString(pipeline_id_part.getInputStream(), "UTF-8");
         final Data data = (Data) DataManager.getData(pipeline_id);
@@ -60,6 +59,11 @@ public class Visualize extends HttpServlet {
                 }
             }
         }
+
+        ArrayList<PipelineBean.Part> currentParts = data.getPipelineParts();
+        PipelineBean.Part get = currentParts.get(data.getPipelineIndex());
+
+        final String viz_path = get.getParameter("path") != null ? get.getParameter("path").getValue() : getInitParameter("path");
 
         PipedInputStream in = new PipedInputStream();
         final PipedOutputStream out = new PipedOutputStream(in);

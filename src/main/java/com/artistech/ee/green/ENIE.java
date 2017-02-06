@@ -40,9 +40,6 @@ public class ENIE extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String enie_path = getInitParameter("path");
-        String classpath = getInitParameter("classpath");
-
         Part pipeline_id_part = request.getPart("pipeline_id");
         String pipeline_id = IOUtils.toString(pipeline_id_part.getInputStream(), "UTF-8");
         Data data = (Data) DataManager.getData(pipeline_id);
@@ -64,6 +61,9 @@ public class ENIE extends HttpServlet {
         String enie_props = parameter.getValue();
         parameter = get.getParameter("tagger");
         String tagger = parameter.getValue();
+
+        String enie_path = get.getParameter("path") != null ? get.getParameter("path").getValue() : getInitParameter("path");
+        String classpath = get.getParameter("classpath") != null ? get.getParameter("classpath").getValue() : getInitParameter("classpath");
 
         String enie_out = data.getEnieOut();
         File output_dir = new File(enie_out);

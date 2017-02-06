@@ -42,9 +42,6 @@ public class Merge extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String joint_ere_path = getInitParameter("path");
-        String classpath = getInitParameter("classpath");
-
         Part pipeline_id_part = request.getPart("pipeline_id");
         String pipeline_id = IOUtils.toString(pipeline_id_part.getInputStream(), "UTF-8");
         Data data = (Data) DataManager.getData(pipeline_id);
@@ -63,6 +60,9 @@ public class Merge extends HttpServlet {
         PipelineBean.Part get = currentParts.get(data.getPipelineIndex());
         PipelineBean.Parameter parameter = get.getParameter("combiner");
         String combiner = parameter.getValue();
+
+        String joint_ere_path = get.getParameter("path") != null ? get.getParameter("path").getValue() : getInitParameter("path");
+        String classpath = get.getParameter("classpath") != null ? get.getParameter("classpath").getValue() : getInitParameter("classpath");
 
         String merge_out = data.getMergeOut();
         File output_dir = new File(merge_out);
