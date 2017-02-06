@@ -2,7 +2,7 @@
 
 This is a web-app which will utilize various 3rd party apps/scripts for extracting entity information from documents.
 
-## Version 1.2
+## Version 1.3
 
 - Upload file capability
 - Joint ERE and ENIE servlets, moderately configured with defaults.
@@ -12,12 +12,13 @@ This is a web-app which will utilize various 3rd party apps/scripts for extracti
 - Allow parameters to be set or Pipeline altered
 - Output intermediary stages
 - Pipeline Run View
+- Client side is all jQuery
 
 ## Downloading
 
 ```sh
 git clone https://github.com/artistech-inc/green-pipeline.git
-git checkout v1.2
+git checkout v1.3
 ```
 
 ## Configuration
@@ -45,7 +46,7 @@ mvn clean install
 cd ..
 git clone https://github.com/artistech-inc/green-pipeline-web.git
 cd green-pipeline-web
-git clone v1.2
+git clone v1.3
 mvn clean package
 ```
 
