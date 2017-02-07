@@ -17,13 +17,18 @@ This is a web-app which will utilize various 3rd party apps/scripts for extracti
 ## Downloading
 
 ```sh
-git clone https://github.com/artistech-inc/green-pipeline.git
-git checkout v1.3
+git clone https://github.com/artistech-inc/pipeline-base.git
+cd pipeline-base
+mvn clean install
+cd ..
+git clone https://github.com/artistech-incgreen-pipeline.git
+cd green-pipeline-web
+mvn clean package
 ```
 
 ## Configuration
 
-Update the [pipeline.yml](https://github.com/artistech-inc/green-pipeline-web/blob/v1.3/src/main/resources/pipeline.yml) file.  Each component must have the proper path value set.  This is the location where the external process will execute from.
+Update the [pipeline.yml](https://github.com/artistech-inc/green-pipeline-web/blob/master/src/main/resources/pipeline.yml) file.  Each component must have the proper path value set.  This is the location where the external process will execute from.
 
 - joint_ere
 - ENIE
@@ -41,12 +46,10 @@ The project can also be compiled on the command line directly using maven.
 ```sh
 git clone https://github.com/artistech-inc/pipeline-base.git
 cd pipeline-base
-git checkout v1.3
 mvn clean install
 cd ..
 git clone https://github.com/artistech-inc/green-pipeline-web.git
 cd green-pipeline-web
-git checkout v1.3
 mvn clean package
 ```
 
