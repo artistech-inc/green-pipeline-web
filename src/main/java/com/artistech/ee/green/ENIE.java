@@ -5,12 +5,16 @@ package com.artistech.ee.green;
 
 import com.artistech.ee.beans.Data;
 import com.artistech.ee.beans.DataManager;
+import com.artistech.ee.beans.PipelineBean;
 import com.artistech.utils.ExternalProcess;
 import com.artistech.utils.StreamGobbler;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +23,7 @@ import javax.servlet.http.Part;
 import org.apache.commons.io.IOUtils;
 
 /**
+ * Handle running the ENIE process.
  *
  * @author matta
  */
@@ -35,10 +40,6 @@ public class ENIE extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String enie_path = getInitParameter("path");
-        String enie_props = enie_path + getInitParameter("property");
-        String classpath = getInitParameter("classpath");
-
         Part pipeline_id_part = request.getPart("pipeline_id");
         String pipeline_id = IOUtils.toString(pipeline_id_part.getInputStream(), "UTF-8");
         Data data = (Data) DataManager.getData(pipeline_id);
@@ -47,24 +48,42 @@ public class ENIE extends HttpServlet {
 
         File test_file = new File(file_list);
         if (!test_file.exists()) {
-            for (String f : data.getInputFiles()) {
-                try (java.io.BufferedWriter writer = new BufferedWriter(new FileWriter(test_file))) {
+            try (java.io.BufferedWriter writer = new BufferedWriter(new FileWriter(test_file))) {
+                for (String f : data.getInputFiles()) {
                     writer.write(f + System.lineSeparator());
                 }
             }
         }
 
+        ArrayList<PipelineBean.Part> currentParts = data.getPipelineParts();
+        PipelineBean.Part get = currentParts.get(data.getPipelineIndex());
+        PipelineBean.Parameter parameter = get.getParameter("property");
+        String enie_props = parameter.getValue();
+        parameter = get.getParameter("tagger");
+        String tagger = parameter.getValue();
+
+        String enie_path = get.getParameter("path") != null ? get.getParameter("path").getValue() : getInitParameter("path");
+        String classpath = get.getParameter("classpath") != null ? get.getParameter("classpath").getValue() : getInitParameter("classpath");
+
         String enie_out = data.getEnieOut();
         File output_dir = new File(enie_out);
         output_dir.mkdirs();
 
-        //TODO: need to know "$FILE_LIST", "$INPUT_SGM", "$ENIE_OUTP"
-        ProcessBuilder pb = new ProcessBuilder("java", "-cp", classpath, "-Xmx8g", "-Xms8g", "-server", "-DjetHome=./", "cuny.blender.englishie.ace.IETagger", enie_props, file_list, input_sgm, enie_out);
+        ProcessBuilder pb = new ProcessBuilder("java", "-cp", classpath, "-Xmx8g", "-Xms8g", "-server", "-DjetHome=./", tagger, enie_props, file_list, input_sgm, enie_out);
         pb.directory(new File(enie_path));
         //catch output...
         pb.redirectErrorStream(true);
         Process proc = pb.start();
-        StreamGobbler sg = new StreamGobbler(proc.getInputStream());
+
+        //enable writing to console log
+        OutputStream os = new FileOutputStream(new File(data.getConsoleFile()), true);
+        StreamGobbler sg = new StreamGobbler(proc.getInputStream(), os);
+        sg.write("ENIE");
+        StringBuilder sb = new StringBuilder();
+        for (String cmd : pb.command()) {
+            sb.append(cmd).append(" ");
+        }
+        sg.write(sb.toString().trim());
         sg.start();
         ExternalProcess ex_proc = new ExternalProcess(sg, proc);
         data.setProc(ex_proc);
@@ -110,7 +129,7 @@ public class ENIE extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Run ENIE Step";
     }// </editor-fold>
 
 }

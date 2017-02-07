@@ -5,12 +5,15 @@ package com.artistech.ee.green;
 
 import com.artistech.ee.beans.DataManager;
 import com.artistech.ee.beans.Data;
+import com.artistech.ee.beans.PipelineBean;
 import com.artistech.utils.ExternalProcess;
 import com.artistech.utils.StreamGobbler;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
@@ -26,6 +29,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 /**
+ * Handle generating the viz output.
  *
  * @author matta
  */
@@ -42,8 +46,6 @@ public class Visualize extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        final String viz_path = getInitParameter("path");
-
         Part pipeline_id_part = request.getPart("pipeline_id");
         String pipeline_id = IOUtils.toString(pipeline_id_part.getInputStream(), "UTF-8");
         final Data data = (Data) DataManager.getData(pipeline_id);
@@ -51,16 +53,21 @@ public class Visualize extends HttpServlet {
 
         File test_file = new File(file_list);
         if (!test_file.exists()) {
-            for (String f : data.getInputFiles()) {
-                try (java.io.BufferedWriter writer = new BufferedWriter(new FileWriter(test_file))) {
+            try (java.io.BufferedWriter writer = new BufferedWriter(new FileWriter(test_file))) {
+                for (String f : data.getInputFiles()) {
                     writer.write(f + System.lineSeparator());
                 }
             }
         }
-        
+
+        ArrayList<PipelineBean.Part> currentParts = data.getPipelineParts();
+        PipelineBean.Part get = currentParts.get(data.getPipelineIndex());
+
+        final String viz_path = get.getParameter("path") != null ? get.getParameter("path").getValue() : getInitParameter("path");
+
         PipedInputStream in = new PipedInputStream();
         final PipedOutputStream out = new PipedOutputStream(in);
-        StreamGobbler sg = new StreamGobbler(in);
+        StreamGobbler sg = new StreamGobbler(in, null);
         sg.start();
 
         final OutputStreamWriter bos = new OutputStreamWriter(out);
@@ -95,7 +102,16 @@ public class Visualize extends HttpServlet {
                         pb.directory(new File(viz_path));
                         pb.redirectErrorStream(true);
                         Process proc = pb.start();
-                        StreamGobbler sg = new StreamGobbler(proc.getInputStream());
+
+                        //enable writing to console log
+                        OutputStream os = new FileOutputStream(new File(data.getConsoleFile()), true);
+                        StreamGobbler sg = new StreamGobbler(proc.getInputStream(), os);
+                        sg.write("MERGE VIZ");
+                        StringBuilder sb = new StringBuilder();
+                        for(String cmd : pb.command()) {
+                            sb.append(cmd).append(" ");
+                        }
+                        sg.write(sb.toString().trim());
                         sg.start();
 
                         try {
@@ -103,7 +119,7 @@ public class Visualize extends HttpServlet {
                         } catch (InterruptedException ex) {
                             Logger.getLogger(JointEre.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                        bos.write("MERGE VIZ" + System.lineSeparator());
+//                        bos.write("MERGE VIZ" + System.lineSeparator());
                         bos.write(sg.getUpdateText() + System.lineSeparator());
                         bos.flush();
                     } catch (IOException ex) {
@@ -113,7 +129,7 @@ public class Visualize extends HttpServlet {
 
                 /**
                  * ENIE VIZ!
-                 * 
+                 *
                  * TODO: rename file to apf.xml
                  */
                 dest = new File(data.getEnieOut());
@@ -124,12 +140,12 @@ public class Visualize extends HttpServlet {
                         } catch (IOException e) {
                             Logger.getLogger(Visualize.class.getName()).log(Level.SEVERE, null, e);
                         }
-                        
+
                         File dir = new File(data.getEnieOut());
                         File[] listFiles = dir.listFiles();
                         ArrayList<File> toDelete = new ArrayList<>();
-                        for(File f : listFiles) {
-                            if(f.getName().endsWith(".xml")) {
+                        for (File f : listFiles) {
+                            if (f.getName().endsWith(".xml")) {
                                 String fileName = f.getAbsolutePath().replace(".xml", ".apf.xml");
                                 File dest2 = new File(fileName);
                                 FileUtils.copyFile(f, dest2);
@@ -145,7 +161,16 @@ public class Visualize extends HttpServlet {
                         pb.directory(new File(viz_path));
                         pb.redirectErrorStream(true);
                         Process proc = pb.start();
-                        StreamGobbler sg = new StreamGobbler(proc.getInputStream());
+
+                        //enable writing to console log
+                        OutputStream os = new FileOutputStream(new File(data.getConsoleFile()), true);
+                        StreamGobbler sg = new StreamGobbler(proc.getInputStream(), os);
+                        sg.write("ENIE VIZ");
+                        StringBuilder sb = new StringBuilder();
+                        for(String cmd : pb.command()) {
+                            sb.append(cmd).append(" ");
+                        }
+                        sg.write(sb.toString().trim());
                         sg.start();
 
                         try {
@@ -153,10 +178,10 @@ public class Visualize extends HttpServlet {
                         } catch (InterruptedException ex) {
                             Logger.getLogger(JointEre.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                        for(File f : toDelete) {
+                        for (File f : toDelete) {
                             f.delete();
                         }
-                        bos.write("ENIE VIZ" + System.lineSeparator());
+//                        bos.write("ENIE VIZ" + System.lineSeparator());
                         bos.write(sg.getUpdateText() + System.lineSeparator());
                         bos.flush();
                     } catch (IOException ex) {
@@ -183,7 +208,16 @@ public class Visualize extends HttpServlet {
                         pb.directory(new File(viz_path));
                         pb.redirectErrorStream(true);
                         Process proc = pb.start();
-                        StreamGobbler sg = new StreamGobbler(proc.getInputStream());
+
+                        //enable writing to console log
+                        OutputStream os = new FileOutputStream(new File(data.getConsoleFile()), true);
+                        StreamGobbler sg = new StreamGobbler(proc.getInputStream(), os);
+                        sg.write("JOINT ERE VIZ");
+                        StringBuilder sb = new StringBuilder();
+                        for(String cmd : pb.command()) {
+                            sb.append(cmd).append(" ");
+                        }
+                        sg.write(sb.toString().trim());
                         sg.start();
 
                         try {
@@ -191,7 +225,7 @@ public class Visualize extends HttpServlet {
                         } catch (InterruptedException ex) {
                             Logger.getLogger(JointEre.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                        bos.write("JOINT ERE VIZ" + System.lineSeparator());
+//                        bos.write("JOINT ERE VIZ" + System.lineSeparator());
                         bos.write(sg.getUpdateText() + System.lineSeparator());
                         bos.flush();
                     } catch (IOException ex) {
@@ -245,7 +279,7 @@ public class Visualize extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Run Visualization Step";
     }// </editor-fold>
 
 }

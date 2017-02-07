@@ -5,12 +5,16 @@ package com.artistech.ee.green;
 
 import com.artistech.ee.beans.DataManager;
 import com.artistech.ee.beans.Data;
+import com.artistech.ee.beans.PipelineBean;
 import com.artistech.utils.ExternalProcess;
 import com.artistech.utils.StreamGobbler;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -21,6 +25,7 @@ import javax.servlet.http.Part;
 import org.apache.commons.io.IOUtils;
 
 /**
+ * Handle running the merge script.
  *
  * @author matta
  */
@@ -37,9 +42,6 @@ public class Merge extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String joint_ere_path = getInitParameter("path");
-        String classpath = getInitParameter("classpath");
-
         Part pipeline_id_part = request.getPart("pipeline_id");
         String pipeline_id = IOUtils.toString(pipeline_id_part.getInputStream(), "UTF-8");
         Data data = (Data) DataManager.getData(pipeline_id);
@@ -48,28 +50,41 @@ public class Merge extends HttpServlet {
 
         File test_file = new File(file_list);
         if (!test_file.exists()) {
-            for (String f : data.getInputFiles()) {
-                try (java.io.BufferedWriter writer = new BufferedWriter(new FileWriter(test_file))) {
+            try (java.io.BufferedWriter writer = new BufferedWriter(new FileWriter(test_file))) {
+                for (String f : data.getInputFiles()) {
                     writer.write(f + System.lineSeparator());
                 }
             }
         }
+        ArrayList<PipelineBean.Part> currentParts = data.getPipelineParts();
+        PipelineBean.Part get = currentParts.get(data.getPipelineIndex());
+        PipelineBean.Parameter parameter = get.getParameter("combiner");
+        String combiner = parameter.getValue();
+
+        String joint_ere_path = get.getParameter("path") != null ? get.getParameter("path").getValue() : getInitParameter("path");
+        String classpath = get.getParameter("classpath") != null ? get.getParameter("classpath").getValue() : getInitParameter("classpath");
 
         String merge_out = data.getMergeOut();
         File output_dir = new File(merge_out);
         output_dir.mkdirs();
-        //java -Xmx8G -cp ere-11-08-2016_small.jar:lib/\* edu.rpi.jie.ere.joint.Tagger /work/Documents/FOUO/EntityExtraction/joint_ere/models/joint/joint_model /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/input/ /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/test.list /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/joint_ere_out/
 
-        //TODO: need to know "$INPUT_SGM", "$FILE_LIST", "$JERE_OUTP"
-        //java -Xmx8G -cp $MERG_CPTH arl.workflow.combine.MergeEnieEre $FILE_LIST $INPUT_SGM "" $ENIE_OUTP $JERE_OUTP .xml .apf.xml $MERG_OUTP
-        ProcessBuilder pb = new ProcessBuilder("java", "-Xmx8G", "-cp", classpath, "arl.workflow.combine.MergeEnieEre", file_list, input_sgm, "", data.getEnieOut(), data.getJointEreOut(), ".xml", ".apf.xml", merge_out);
+        ProcessBuilder pb = new ProcessBuilder("java", "-Xmx8G", "-cp", classpath, combiner, file_list, input_sgm, "", data.getEnieOut(), data.getJointEreOut(), ".xml", ".apf.xml", merge_out);
         for(String cmd : pb.command()) {
             Logger.getLogger(Merge.class.getName()).log(Level.WARNING, cmd);
         }
         pb.directory(new File(joint_ere_path));
         pb.redirectErrorStream(true);
         Process proc = pb.start();
-        StreamGobbler sg = new StreamGobbler(proc.getInputStream());
+
+        //enable writing to console log
+        OutputStream os = new FileOutputStream(new File(data.getConsoleFile()), true);
+        StreamGobbler sg = new StreamGobbler(proc.getInputStream(), os);
+        sg.write("MERGE");
+        StringBuilder sb = new StringBuilder();
+        for(String cmd : pb.command()) {
+            sb.append(cmd).append(" ");
+        }
+        sg.write(sb.toString().trim());
         sg.start();
         ExternalProcess ex_proc = new ExternalProcess(sg, proc);
         data.setProc(ex_proc);
@@ -114,7 +129,7 @@ public class Merge extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Run merge Step";
     }// </editor-fold>
 
 }
