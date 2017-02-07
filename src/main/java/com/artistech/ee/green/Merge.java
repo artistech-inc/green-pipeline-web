@@ -1,9 +1,15 @@
 /*
  * Copyright 2017 ArtisTech, Inc.
  */
-package com.artistech.ee.web;
+package com.artistech.ee.green;
 
+import com.artistech.ee.beans.DataManager;
+import com.artistech.ee.beans.Data;
+import com.artistech.utils.ExternalProcess;
+import com.artistech.utils.StreamGobbler;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,11 +42,20 @@ public class Merge extends HttpServlet {
 
         Part pipeline_id_part = request.getPart("pipeline_id");
         String pipeline_id = IOUtils.toString(pipeline_id_part.getInputStream(), "UTF-8");
-        Data data = DataManager.getData(pipeline_id);
+        Data data = (Data) DataManager.getData(pipeline_id);
         String input_sgm = data.getInput();
         String file_list = data.getTestList();
+
+        File test_file = new File(file_list);
+        if (!test_file.exists()) {
+            for (String f : data.getInputFiles()) {
+                try (java.io.BufferedWriter writer = new BufferedWriter(new FileWriter(test_file))) {
+                    writer.write(f + System.lineSeparator());
+                }
+            }
+        }
+
         String merge_out = data.getMergeOut();
-//        data.setMergeOut(merge_out);
         File output_dir = new File(merge_out);
         output_dir.mkdirs();
         //java -Xmx8G -cp ere-11-08-2016_small.jar:lib/\* edu.rpi.jie.ere.joint.Tagger /work/Documents/FOUO/EntityExtraction/joint_ere/models/joint/joint_model /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/input/ /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/test.list /work/Dev/green-pipeline-web/data/f3eb38c8-aba3-4e1b-9a69-6a9e5b7b7d43/joint_ere_out/
@@ -51,7 +66,6 @@ public class Merge extends HttpServlet {
         for(String cmd : pb.command()) {
             Logger.getLogger(Merge.class.getName()).log(Level.WARNING, cmd);
         }
-//        Map<String, String> environment = pb.environment();
         pb.directory(new File(joint_ere_path));
         pb.redirectErrorStream(true);
         Process proc = pb.start();
@@ -59,15 +73,7 @@ public class Merge extends HttpServlet {
         sg.start();
         ExternalProcess ex_proc = new ExternalProcess(sg, proc);
         data.setProc(ex_proc);
-//        try {
-//            proc.waitFor();
-//        } catch (InterruptedException ex) {
-//            Logger.getLogger(JointEre.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        Part part = request.getPart("step");
-//        String target = IOUtils.toString(part.getInputStream(), "UTF-8");
 
-        // displays done.jsp page after upload finished
         getServletContext().getRequestDispatcher("/watchProcess.jsp").forward(
                 request, response);
     }

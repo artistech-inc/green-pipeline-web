@@ -1,22 +1,28 @@
 /*
  * Copyright 2017 ArtisTech, Inc.
  */
-package com.artistech.ee.web;
+package com.artistech.ee.green;
 
+import com.artistech.ee.beans.Data;
+import com.artistech.ee.beans.DataManager;
+import com.artistech.utils.ExternalProcess;
+import com.artistech.utils.StreamGobbler;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 import org.apache.commons.io.IOUtils;
 
 /**
  *
  * @author matta
  */
-public class ViewRaw extends HttpServlet {
+public class ENIE extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -29,23 +35,43 @@ public class ViewRaw extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String pipeline_id = request.getParameter("pipeline_id");
-        String stage = request.getParameter("stage");
-        String file = request.getParameter("file");
-        Data data = DataManager.getData(pipeline_id);
-        File ftest = new File(file);
-        if (file.endsWith(".xml")) {
-            response.setContentType("text/xml;charset=UTF-8");
-        } else {
-            response.setContentType("text/plain;charset=UTF-8");
+        String enie_path = getInitParameter("path");
+        String enie_props = enie_path + getInitParameter("property");
+        String classpath = getInitParameter("classpath");
+
+        Part pipeline_id_part = request.getPart("pipeline_id");
+        String pipeline_id = IOUtils.toString(pipeline_id_part.getInputStream(), "UTF-8");
+        Data data = (Data) DataManager.getData(pipeline_id);
+        String input_sgm = data.getInput();
+        String file_list = data.getTestList();
+
+        File test_file = new File(file_list);
+        if (!test_file.exists()) {
+            for (String f : data.getInputFiles()) {
+                try (java.io.BufferedWriter writer = new BufferedWriter(new FileWriter(test_file))) {
+                    writer.write(f + System.lineSeparator());
+                }
+            }
         }
-        if (ftest.exists()) {
-            IOUtils.copy(new FileInputStream(ftest), response.getWriter(), "UTF-8");
-        } else {
-            String fileName = data.getData(stage) + File.separator + file;
-            File f = new File(fileName);
-            IOUtils.copy(new FileInputStream(f), response.getWriter(), "UTF-8");
-        }
+
+        String enie_out = data.getEnieOut();
+        File output_dir = new File(enie_out);
+        output_dir.mkdirs();
+
+        //TODO: need to know "$FILE_LIST", "$INPUT_SGM", "$ENIE_OUTP"
+        ProcessBuilder pb = new ProcessBuilder("java", "-cp", classpath, "-Xmx8g", "-Xms8g", "-server", "-DjetHome=./", "cuny.blender.englishie.ace.IETagger", enie_props, file_list, input_sgm, enie_out);
+        pb.directory(new File(enie_path));
+        //catch output...
+        pb.redirectErrorStream(true);
+        Process proc = pb.start();
+        StreamGobbler sg = new StreamGobbler(proc.getInputStream());
+        sg.start();
+        ExternalProcess ex_proc = new ExternalProcess(sg, proc);
+        data.setProc(ex_proc);
+
+        // displays done.jsp page after upload finished
+        getServletContext().getRequestDispatcher("/watchProcess.jsp").forward(
+                request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

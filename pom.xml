@@ -4,7 +4,7 @@
 
     <groupId>com.artistech</groupId>
     <artifactId>green-pipeline-web</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
     <packaging>war</packaging>
 
     <name>green-pipeline-web</name>
@@ -65,6 +65,16 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.esotericsoftware.yamlbeans</groupId>
+            <artifactId>yamlbeans</artifactId>
+            <version>1.11</version>
+        </dependency>
+        <dependency>
+            <groupId>com.artistech</groupId>
+            <artifactId>pipeline-base</artifactId>
             <version>1.2</version>
         </dependency>
     </dependencies>

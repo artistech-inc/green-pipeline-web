@@ -2,7 +2,7 @@
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
     <servlet>
         <servlet-name>JointEre</servlet-name>
-        <servlet-class>com.artistech.ee.web.JointEre</servlet-class>
+        <servlet-class>com.artistech.ee.green.JointEre</servlet-class>
         <init-param>
             <param-name>path</param-name>
             <param-value>/work/Documents/FOUO/EntityExtraction/joint_ere</param-value>
@@ -18,7 +18,7 @@
     </servlet>
     <servlet>
         <servlet-name>ENIE</servlet-name>
-        <servlet-class>com.artistech.ee.web.ENIE</servlet-class>
+        <servlet-class>com.artistech.ee.green.ENIE</servlet-class>
         <init-param>
             <param-name>path</param-name>
             <param-value>/work/Documents/FOUO/EntityExtraction/ENIE</param-value>
@@ -33,12 +33,8 @@
         </init-param>
     </servlet>
     <servlet>
-        <servlet-name>UploadServlet</servlet-name>
-        <servlet-class>com.artistech.ee.web.UploadServlet</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>Merge</servlet-name>
-        <servlet-class>com.artistech.ee.web.Merge</servlet-class>
+        <servlet-class>com.artistech.ee.green.Merge</servlet-class>
         <init-param>
             <param-name>path</param-name>
             <param-value>/work/Documents/FOUO/EntityExtraction/joint_ere</param-value>
@@ -50,31 +46,11 @@
     </servlet>
     <servlet>
         <servlet-name>Visualize</servlet-name>
-        <servlet-class>com.artistech.ee.web.Visualize</servlet-class>
+        <servlet-class>com.artistech.ee.green.Visualize</servlet-class>
         <init-param>
             <param-name>path</param-name>
             <param-value>/work/Documents/FOUO/EntityExtraction/green_pipeline/visualization</param-value>
         </init-param>
-    </servlet>
-    <servlet>
-        <servlet-name>View</servlet-name>
-        <servlet-class>com.artistech.ee.web.View</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>ViewRaw</servlet-name>
-        <servlet-class>com.artistech.ee.web.ViewRaw</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>ProcessOutput</servlet-name>
-        <servlet-class>com.artistech.ee.web.ProcessOutput</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>ProcessMonitor</servlet-name>
-        <servlet-class>com.artistech.ee.web.ProcessMonitor</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>KillProcess</servlet-name>
-        <servlet-class>com.artistech.ee.web.KillProcess</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>JointEre</servlet-name>
@@ -85,36 +61,12 @@
         <url-pattern>/ENIE</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>UploadServlet</servlet-name>
-        <url-pattern>/UploadServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>Merge</servlet-name>
         <url-pattern>/Merge</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Visualize</servlet-name>
         <url-pattern>/Visualize</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>View</servlet-name>
-        <url-pattern>/View</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ViewRaw</servlet-name>
-        <url-pattern>/ViewRaw</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ProcessOutput</servlet-name>
-        <url-pattern>/ProcessOutput</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ProcessMonitor</servlet-name>
-        <url-pattern>/ProcessMonitor</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>KillProcess</servlet-name>
-        <url-pattern>/KillProcess</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
